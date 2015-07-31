@@ -3,5 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/phones_mitht/settings.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/phones_mitht/urls.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/requirements.txt" charset="UTF-8" />
   </component>
 </project>
