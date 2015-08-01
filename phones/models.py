@@ -2,20 +2,7 @@ from django.db import models
 from hashlib import md5
 from os import path as op
 from time import time
-
-############################
-# Автоматическая генерация #
-# имени файла в ImageField #
-############################
-
-def upload_to(instance, filename, prefix=None, unique=False):
-    ext = op.splitext(filename)[1]
-    name = str(instance.pk or '') + filename + (str(time()) if unique else '')
-    filename = md5(name.encode('utf8')).hexdigest() + ext
-    basedir = op.join(instance._meta.app_label, 'images/')
-    if prefix:
-        basedir = op.join(basedir, prefix)
-    return op.join(basedir, filename[:2], filename[2:4], filename)
+import mptt
 
 ###########################
 # Добавляем модели данных #
@@ -35,13 +22,13 @@ class Organization(models.Model):
     class Meta:
         verbose_name = 'Организация'
         verbose_name_plural = 'Организации'
+        ordering = ['org_name']
 
 # Справочник подразделений, с шифрами и иерархией
 class Unit(models.Model):
-    unit_cypher = models.CharField(max_length=10, verbose_name=('Шифр'))
+    unit_cypher = models.CharField(max_length=10, verbose_name=('Шифр'), blank=True)
     unit_name = models.CharField(max_length=100, verbose_name=('Подразделение'))
-    unit_parent = models.CharField(max_length=100, verbose_name=('Родительское подразделение'))
-    unit_child = models.CharField(max_length=100, verbose_name=('Дочернее подразделение'))
+    parent = models.ForeignKey('self', blank=True, null=True, verbose_name="Родитель", related_name='child')
 
     def __str__(self):
         return self.unit_name
@@ -49,6 +36,8 @@ class Unit(models.Model):
     class Meta:
         verbose_name = 'Подразделение'
         verbose_name_plural = 'Подразделения'
+        ordering = ['unit_name']
+mptt.register(Unit,)
 
 # Справочник должностей, с начальниками и подчиненными
 class Position(models.Model):
@@ -62,6 +51,7 @@ class Position(models.Model):
     class Meta:
         verbose_name = 'Должность'
         verbose_name_plural = 'Должности'
+        ordering = ['position']
 
 # Телефонные префиксы
 class Prefix(models.Model):
@@ -73,6 +63,7 @@ class Prefix(models.Model):
     class Meta:
         verbose_name = 'Префикс'
         verbose_name_plural = 'Префиксы'
+        ordering = ['prefix']
 
 # Коды города
 class AreaCode(models.Model):
@@ -84,6 +75,7 @@ class AreaCode(models.Model):
     class Meta:
         verbose_name = 'Код города'
         verbose_name_plural = 'Коды городов'
+        ordering = ['area_code']
 
 # Почтовые индексы
 class PostCode(models.Model):
@@ -95,7 +87,7 @@ class PostCode(models.Model):
     class Meta:
         verbose_name = 'Почтовый индекс'
         verbose_name_plural = 'Почтовые индексы'
-
+        ordering = ['post_code']
 # Города
 class City(models.Model):
     city = models.CharField(max_length=10, verbose_name=('Город'))
@@ -107,6 +99,7 @@ class City(models.Model):
     class Meta:
         verbose_name = 'Город'
         verbose_name_plural = 'Города'
+        ordering = ['city']
 
 # Улицы
 class Street(models.Model):
@@ -119,6 +112,7 @@ class Street(models.Model):
     class Meta:
         verbose_name = 'Улица'
         verbose_name_plural = 'Улицы'
+        ordering = ['street']
 
 # Здания
 class Building(models.Model):
@@ -130,6 +124,7 @@ class Building(models.Model):
     class Meta:
         verbose_name = 'Здание'
         verbose_name_plural = 'Здания'
+        ordering = ['building']
 
 # Корпуса в зданиях
 class Campus(models.Model):
@@ -142,6 +137,8 @@ class Campus(models.Model):
     class Meta:
         verbose_name = 'Корпус'
         verbose_name_plural = 'Корпуса'
+        ordering = ['campus']
+
 # Кабинеты
 class Office(models.Model):
     office = models.CharField(max_length=5, verbose_name=('Кабинет'))
@@ -152,6 +149,11 @@ class Office(models.Model):
     class Meta:
         verbose_name = 'Кабинет'
         verbose_name_plural = 'Кабинеты'
+        ordering = ['office']
+
+# Часы работы
+class WorkHours(models.Model):
+    work_hours = models.TimeField(verbose_name='Часы работы')
 
 # Телефоны
 class Phone(models.Model):
@@ -166,6 +168,7 @@ class Phone(models.Model):
     class Meta:
         verbose_name = 'Телефон'
         verbose_name_plural = 'Телефоны'
+        ordering = ['area_code']
 
 # Адреса
 class Address(models.Model):
@@ -175,9 +178,13 @@ class Address(models.Model):
     campus = models.ForeignKey(Campus)
     office = models.ForeignKey(Office)
 
+    def __str__(self):
+          return u'%s д. %s, %s-%s' % (self.street, self.building, self.campus, self.office)
+
     class Meta:
         verbose_name = 'Адрес'
         verbose_name_plural = 'Адреса'
+        ordering = ['street']
 
 # Ученые степени
 class Degree(models.Model):
@@ -203,24 +210,39 @@ class ScienceRank(models.Model):
         verbose_name = 'Ученое звание'
         verbose_name_plural = 'Ученые звания'
 
+############################
+# Автоматическая генерация #
+# имени файла в ImageField #
+############################
+
+def upload_to(instance, filename, prefix=None, unique=False):
+    ext = op.splitext(filename)[1]
+    name = str(instance.pk or '') + filename + (str(time()) if unique else '')
+    filename = md5(name.encode('utf8')).hexdigest() + ext
+    basedir = op.join(instance._meta.app_label, 'images/')
+    if prefix:
+        basedir = op.join(basedir, prefix)
+    return op.join(basedir, filename[:2], filename[2:4], filename)
+
 # И наконец люди
 class Person(models.Model):
     last_name = models.CharField(max_length=30, verbose_name=('Фамилия'))
     first_name = models.CharField(max_length=30, verbose_name=('Имя'))
     middle_name = models.CharField(max_length=30, verbose_name=('Отчество'))
-    unit = models.ForeignKey(Unit, verbose_name=('Подразделение'))
-    position = models.ForeignKey(Position, verbose_name=('Должность'))
+    unit = models.ManyToManyField(Unit, verbose_name=('Подразделение'))
+    position = models.ManyToManyField(Position, verbose_name=('Должность'))
     degree = models.ForeignKey(Degree, verbose_name=('Ученая степень'))
     science_rank = models.ForeignKey(ScienceRank, verbose_name=('Ученое звание'))
     address = models.ForeignKey(Address, verbose_name=('Адрес'))
-    phone = models.ForeignKey(Phone, verbose_name=('Телефон'))
+    phone = models.ManyToManyField(Phone, verbose_name=('Телефон'))
     email = models.EmailField(verbose_name='Email')
     photo = models.ImageField(upload_to=upload_to, verbose_name='Фотография', blank=True)
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")
 
     def __str__(self):
-          return u'%s %s' % (self.first_name, self.last_name)
+          return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
 
     class Meta:
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
+        ordering = ['last_name']

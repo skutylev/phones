@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'phones',
+    'django_mptt_admin',
 )
 
 MIDDLEWARE_CLASSES = (
