@@ -10,11 +10,11 @@ import mptt
 
 # Справочник организаций
 class Organization(models.Model):
-    org_name = models.CharField(max_length=100, verbose_name=('Название организации'))
-    short_org_name = models.CharField(max_length=10, verbose_name=('Короткое название'))
-    org_desc = models.CharField(max_length=200, verbose_name=('Описание'))
-    l_address = models.CharField(max_length=200, verbose_name=('Юридический адрес'))
-    bank_details = models.CharField(max_length=50, verbose_name=('Банковские реквизиты'))
+    org_name = models.CharField(max_length=100, verbose_name='Название организации')
+    short_org_name = models.CharField(max_length=10, verbose_name='Короткое название')
+    org_desc = models.CharField(max_length=200, verbose_name='Описание')
+    l_address = models.CharField(max_length=200, verbose_name='Юридический адрес')
+    bank_details = models.CharField(max_length=50, verbose_name='Банковские реквизиты')
 
     def __str__(self):
         return self.short_org_name
@@ -26,9 +26,9 @@ class Organization(models.Model):
 
 # Справочник подразделений, с шифрами и иерархией
 class Unit(models.Model):
-    unit_cypher = models.CharField(max_length=10, verbose_name=('Шифр'), blank=True)
-    unit_name = models.CharField(max_length=100, verbose_name=('Подразделение'))
-    parent = models.ForeignKey('self', blank=True, null=True, verbose_name="Родитель", related_name='child')
+    unit_cypher = models.CharField(max_length=10, verbose_name='Шифр', blank=True)
+    unit_name = models.CharField(max_length=100, verbose_name='Подразделение')
+    parent = models.ForeignKey('self', blank=True, null=True, verbose_name='Родитель', related_name='child')
 
     def __str__(self):
         return self.unit_name
@@ -41,9 +41,9 @@ mptt.register(Unit,)
 
 # Справочник должностей, с начальниками и подчиненными
 class Position(models.Model):
-    position = models.CharField(max_length=50, verbose_name=('Должность'))
-    chief_position = models.CharField(max_length=50, verbose_name=('Начальник'), blank=True)
-    subordinate_position = models.CharField(max_length=50, verbose_name=('Подчиненные'), blank=True)
+    position = models.CharField(max_length=50, verbose_name='Должность')
+    chief_position = models.CharField(max_length=50, verbose_name='Начальник', blank=True)
+    subordinate_position = models.CharField(max_length=50, verbose_name='Подчиненные', blank=True)
 
     def __str__(self):
         return self.position
@@ -55,7 +55,7 @@ class Position(models.Model):
 
 # Телефонные префиксы
 class Prefix(models.Model):
-    prefix = models.CharField(max_length=6, verbose_name=('Префикс'))
+    prefix = models.CharField(max_length=6, verbose_name='Префикс')
 
     def __str__(self):
         return self.prefix
@@ -67,7 +67,7 @@ class Prefix(models.Model):
 
 # Коды города
 class AreaCode(models.Model):
-    area_code = models.CharField(max_length=6, verbose_name=('Код города'))
+    area_code = models.CharField(max_length=6, verbose_name='Код города')
 
     def __str__(self):
         return self.area_code
@@ -79,7 +79,7 @@ class AreaCode(models.Model):
 
 # Почтовые индексы
 class PostCode(models.Model):
-    post_code = models.CharField(max_length=6, verbose_name=('Почтовый индекс'))
+    post_code = models.CharField(max_length=6, verbose_name='Почтовый индекс')
 
     def __str__(self):
         return self.post_code
@@ -90,8 +90,8 @@ class PostCode(models.Model):
         ordering = ['post_code']
 # Города
 class City(models.Model):
-    city = models.CharField(max_length=10, verbose_name=('Город'))
-    area_code = models.ForeignKey(AreaCode)
+    city = models.CharField(max_length=10, verbose_name='Город')
+    area_code = models.ManyToManyField(AreaCode, verbose_name="Код города")
 
     def __str__(self):
         return self.city
@@ -103,8 +103,8 @@ class City(models.Model):
 
 # Улицы
 class Street(models.Model):
-    street = models.CharField(max_length=40, verbose_name=('Улица'))
-    post_code = models.ForeignKey(PostCode)
+    street = models.CharField(max_length=40, verbose_name='Улица')
+    post_code = models.ManyToManyField(PostCode, verbose_name="Почтовый индекс")
 
     def __str__(self):
         return self.street
@@ -116,7 +116,7 @@ class Street(models.Model):
 
 # Здания
 class Building(models.Model):
-    building = models.CharField(max_length=5, verbose_name=('Здание'))
+    building = models.CharField(max_length=5, verbose_name='Здание')
 
     def __str__(self):
         return self.building
@@ -128,8 +128,8 @@ class Building(models.Model):
 
 # Корпуса в зданиях
 class Campus(models.Model):
-    campus = models.CharField(max_length=5, verbose_name=('Корпус'))
-    prefix = models.ForeignKey(Prefix)
+    campus = models.CharField(max_length=5, verbose_name='Корпус')
+    prefix = models.ManyToManyField(Prefix, verbose_name='Префикс')
 
     def __str__(self):
         return self.campus
@@ -141,7 +141,7 @@ class Campus(models.Model):
 
 # Кабинеты
 class Office(models.Model):
-    office = models.CharField(max_length=5, verbose_name=('Кабинет'))
+    office = models.CharField(max_length=5, verbose_name='Кабинет')
 
     def __str__(self):
         return self.office
@@ -153,14 +153,24 @@ class Office(models.Model):
 
 # Часы работы
 class WorkHours(models.Model):
-    work_hours = models.TimeField(verbose_name='Часы работы')
+    schedule = models.CharField(max_length=20, verbose_name='График работы')
+    begin_hours = models.TimeField(verbose_name='Начало рабочего дня')
+    end_hours = models.TimeField(verbose_name='Конец рабочего дня')
+
+    def __str__(self):
+        return u'%s: %s-%s' % (self.schedule, self.begin_hours, self.end_hours)
+
+    class Meta:
+        verbose_name = 'Часы работы'
+        verbose_name_plural = 'Часы работы'
+        ordering = ['begin_hours']
 
 # Телефоны
 class Phone(models.Model):
-    country_code = models.CharField(max_length=2, verbose_name=('Код страны'))
+    country_code = models.CharField(max_length=2, verbose_name='Код страны', default='+7')
     area_code = models.ForeignKey(AreaCode)
     prefix = models.ForeignKey(Prefix)
-    number = models.CharField(max_length=6, verbose_name=('Номер телефона (внутр.)'))
+    number = models.CharField(max_length=6, verbose_name='Номер телефона (внутр.)')
 
     def __str__(self):
         return self.number
@@ -188,8 +198,8 @@ class Address(models.Model):
 
 # Ученые степени
 class Degree(models.Model):
-    degree = models.CharField(max_length=50, verbose_name=('Ученая степень'))
-    short_degree = models.CharField(max_length=6, verbose_name=('Сокращение'))
+    degree = models.CharField(max_length=50, verbose_name='Ученая степень')
+    short_degree = models.CharField(max_length=6, verbose_name='Сокращение')
 
     def __str__(self):
         return self.degree
@@ -200,8 +210,8 @@ class Degree(models.Model):
 
 # Ученые звания
 class ScienceRank(models.Model):
-    science_rank = models.CharField(max_length=50, verbose_name=('Ученое звание'))
-    short_science_rank = models.CharField(max_length=6, verbose_name=('Сокращение'))
+    science_rank = models.CharField(max_length=50, verbose_name='Ученое звание')
+    short_science_rank = models.CharField(max_length=6, verbose_name='Сокращение')
 
     def __str__(self):
         return self.science_rank
@@ -226,18 +236,20 @@ def upload_to(instance, filename, prefix=None, unique=False):
 
 # И наконец люди
 class Person(models.Model):
-    last_name = models.CharField(max_length=30, verbose_name=('Фамилия'))
-    first_name = models.CharField(max_length=30, verbose_name=('Имя'))
-    middle_name = models.CharField(max_length=30, verbose_name=('Отчество'))
-    unit = models.ManyToManyField(Unit, verbose_name=('Подразделение'))
-    position = models.ManyToManyField(Position, verbose_name=('Должность'))
-    degree = models.ForeignKey(Degree, verbose_name=('Ученая степень'))
-    science_rank = models.ForeignKey(ScienceRank, verbose_name=('Ученое звание'))
-    address = models.ForeignKey(Address, verbose_name=('Адрес'))
-    phone = models.ManyToManyField(Phone, verbose_name=('Телефон'))
+    last_name = models.CharField(max_length=30, verbose_name='Фамилия')
+    first_name = models.CharField(max_length=30, verbose_name='Имя')
+    middle_name = models.CharField(max_length=30, verbose_name='Отчество')
+    unit = models.ManyToManyField(Unit, verbose_name='Подразделение')
+    position = models.ManyToManyField(Position, verbose_name='Должность')
+    degree = models.ForeignKey(Degree, verbose_name='Ученая степень')
+    science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание')
+    address = models.ForeignKey(Address, verbose_name='Адрес')
+    work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы')
+    phone = models.ManyToManyField(Phone, verbose_name='Телефон')
     email = models.EmailField(verbose_name='Email')
     photo = models.ImageField(upload_to=upload_to, verbose_name='Фотография', blank=True)
-    publish_date = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")
+    publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
+    publish = models.BooleanField(default=False, verbose_name='Опубликовано')
 
     def __str__(self):
           return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
