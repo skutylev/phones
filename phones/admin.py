@@ -3,7 +3,7 @@ from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCo
 from django_mptt_admin.admin import DjangoMpttAdmin
 
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ("org_name", "short_org_name", "org_desc", "l_address", "bank_details", )
+    list_display = ("org_name", "short_org_name", "org_desc", "bank_details", )
 
 class UnitAdmin(DjangoMpttAdmin):
     pass

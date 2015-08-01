@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'phones',
+    'ckeditor',
     'django_mptt_admin',
 )
 
@@ -109,4 +110,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
+)
+
+CKEDITOR_UPLOAD_PATH = (
+    os.path.join(BASE_DIR,  'uploads'),
 )

@@ -2,27 +2,13 @@ from django.db import models
 from hashlib import md5
 from os import path as op
 from time import time
+from ckeditor.fields import RichTextField
 import mptt
 
 ###########################
 # Добавляем модели данных #
 ###########################
 
-# Справочник организаций
-class Organization(models.Model):
-    org_name = models.CharField(max_length=100, verbose_name='Название организации')
-    short_org_name = models.CharField(max_length=10, verbose_name='Короткое название')
-    org_desc = models.CharField(max_length=200, verbose_name='Описание')
-    l_address = models.CharField(max_length=200, verbose_name='Юридический адрес')
-    bank_details = models.CharField(max_length=50, verbose_name='Банковские реквизиты')
-
-    def __str__(self):
-        return self.short_org_name
-
-    class Meta:
-        verbose_name = 'Организация'
-        verbose_name_plural = 'Организации'
-        ordering = ['org_name']
 
 # Справочник подразделений, с шифрами и иерархией
 class Unit(models.Model):
@@ -233,6 +219,22 @@ def upload_to(instance, filename, prefix=None, unique=False):
     if prefix:
         basedir = op.join(basedir, prefix)
     return op.join(basedir, filename[:2], filename[2:4], filename)
+
+# Справочник организаций
+class Organization(models.Model):
+    org_name = models.CharField(max_length=100, verbose_name='Название организации')
+    short_org_name = models.CharField(max_length=10, verbose_name='Короткое название')
+    org_desc = RichTextField(max_length=800, verbose_name='Описание')
+    l_address = models.ForeignKey(Address, max_length=200, verbose_name='Юридический адрес')
+    bank_details = models.CharField(max_length=50, verbose_name='Банковские реквизиты')
+
+    def __str__(self):
+        return self.short_org_name
+
+    class Meta:
+        verbose_name = 'Организация'
+        verbose_name_plural = 'Организации'
+        ordering = ['org_name']
 
 # И наконец люди
 class Person(models.Model):
