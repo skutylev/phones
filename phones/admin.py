@@ -1,14 +1,7 @@
 from django.contrib import admin
-from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCode, City, Street, Building, Campus, Office, Phone, Address, Person
+from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCode, City, Street, Building, Campus, Office, Phone, Address, Person, Degree, ScienceRank
 
 # Register your models here.
-
-class PostCodeInline(admin.StackedInline):
-    model = PostCode
-    extra = 3
-
-class StreetAdmin(admin.ModelAdmin):
-    inlines = [PostCodeInline]
 
 admin.site.register(Organization)
 admin.site.register(Unit)
@@ -24,5 +17,6 @@ admin.site.register(Office)
 admin.site.register(Phone)
 admin.site.register(Address)
 admin.site.register(Person)
-
+admin.site.register(Degree)
+admin.site.register(ScienceRank)
 
