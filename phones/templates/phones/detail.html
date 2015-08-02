@@ -1,0 +1,7 @@
+{% extends "phones/include/base.html" %}
+{% block content %}
+<h1>Person</h1>
+{{ person.last_name }} {{ person.first_name }} {{ person.middle_name }}<br/>
+{% for unit in person.unit.all %}{{ unit }}<br/> {% endfor %}
+{% for position in person.position.all %}{{ position }}<br/> {% endfor %}<br/>
+{% endblock %}

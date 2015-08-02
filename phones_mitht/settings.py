@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+from os.path import abspath, basename, dirname, join, normpath
+SITE_ID = 1
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -27,17 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = (
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
     'grappelli',
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -46,6 +41,10 @@ INSTALLED_APPS = (
     'phones',
     'ckeditor',
     'django_mptt_admin',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,10 +79,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'phones_mitht.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -91,10 +88,8 @@ DATABASES = {
     }
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'ru-RU'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
@@ -106,12 +101,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-
+STATIC_ROOT = normpath(join(BASE_DIR, 'static'))
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
+    os.path.join(BASE_DIR, 'templates'),
     os.path.join(BASE_DIR, 'phones',  'templates'),
 )
 
@@ -119,11 +112,7 @@ CKEDITOR_UPLOAD_PATH = (
     os.path.join(BASE_DIR,  'uploads'),
 )
 
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
-
-
-SITE_ID = 1

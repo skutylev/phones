@@ -242,6 +242,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=30, verbose_name='Фамилия')
     first_name = models.CharField(max_length=30, verbose_name='Имя')
     middle_name = models.CharField(max_length=30, verbose_name='Отчество')
+    slug = models.SlugField(max_length=30, verbose_name='Ссылка')
     unit = models.ManyToManyField(Unit, verbose_name='Подразделение')
     position = models.ManyToManyField(Position, verbose_name='Должность')
     degree = models.ForeignKey(Degree, verbose_name='Ученая степень')
