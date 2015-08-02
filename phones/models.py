@@ -225,6 +225,7 @@ class Organization(models.Model):
     org_name = models.CharField(max_length=100, verbose_name='Название организации')
     short_org_name = models.CharField(max_length=10, verbose_name='Короткое название')
     org_desc = RichTextField(max_length=800, verbose_name='Описание')
+    logo = models.ImageField(upload_to=upload_to, verbose_name='Логотип', blank=True)
     l_address = models.ForeignKey(Address, max_length=200, verbose_name='Юридический адрес')
     bank_details = models.CharField(max_length=50, verbose_name='Банковские реквизиты')
 

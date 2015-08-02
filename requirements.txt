@@ -14,3 +14,4 @@ django-ckeditor==4.5.0
 pillow
 django-mptt
 django_mptt_admin
+django-allauth

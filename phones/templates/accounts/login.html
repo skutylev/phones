@@ -1,0 +1,20 @@
+{% extends "accounts/include/base.html" %}
+
+{% block content %}
+<h1>Телефонный справочник</h1>
+<p>Для начала работы, необходима авторизация в Вашей корпоративной почте</p>
+<div class="socialaccount_ballot">
+    <ul class="socialaccount_providers">
+        <li><a title="Google" class="socialaccount_provider google" href="/accounts/google/login/?process=login">Google</a></li>
+    </ul>
+    <div class="login-or">если у Вас есть Логин и пароль Вы можете авторизоваться ниже</div>
+</div>
+<form class="login" method="POST" action="/accounts/login/">
+    <input type="hidden" name="csrfmiddlewaretoken" value="udhWR28bJEG5k4pYnJmKownvN7uFDIuU">
+    <p><label for="id_login">Имя пользователя:</label> <input autofocus="autofocus" id="id_login" maxlength="30" name="login" placeholder="Имя пользователя" type="text"></p>
+    <p><label for="id_password">Пароль:</label> <input id="id_password" name="password" placeholder="Пароль" type="password"></p>
+    <p><label for="id_remember">Запомнить меня:</label> <input id="id_remember" name="remember" type="checkbox"></p>
+    <a class="button secondaryAction" href="/accounts/password/reset/">Забыли пароль?</a>
+    <button class="primaryAction" type="submit">Войти</button>
+</form>
+{% endblock %}
