@@ -9,7 +9,6 @@ import mptt
 # Добавляем модели данных #
 ###########################
 
-
 # Справочник подразделений, с шифрами и иерархией
 class Unit(models.Model):
     unit_cypher = models.CharField(max_length=10, verbose_name='Шифр', blank=True)
@@ -245,8 +244,8 @@ class Person(models.Model):
     slug = models.SlugField(max_length=30, verbose_name='Ссылка')
     unit = models.ManyToManyField(Unit, verbose_name='Подразделение')
     position = models.ManyToManyField(Position, verbose_name='Должность')
-    degree = models.ForeignKey(Degree, verbose_name='Ученая степень')
-    science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание')
+    degree = models.ForeignKey(Degree, verbose_name='Ученая степень', default='3')
+    science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание', default='3')
     address = models.ForeignKey(Address, verbose_name='Адрес')
     work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы')
     phone = models.ManyToManyField(Phone, verbose_name='Телефон')
@@ -256,7 +255,7 @@ class Person(models.Model):
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
 
     def __str__(self):
-          return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
+        return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
 
     class Meta:
         verbose_name = 'Сотрудник'

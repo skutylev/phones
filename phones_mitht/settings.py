@@ -42,9 +42,9 @@ INSTALLED_APPS = (
     'ckeditor',
     'django_mptt_admin',
     'allauth',
-    'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'haystack'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -101,7 +101,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = normpath(join(BASE_DIR, 'static'))
+STATIC_ROOT = normpath(join(BASE_DIR, 'static', 'collected'))
+
+STATICFILES_DIRS = (
+    normpath(join(BASE_DIR, 'static')),
+)
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
@@ -116,3 +120,11 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://178.62.255.252:9266/',
+        'INDEX_NAME': 'haystack',
+    },
+}
