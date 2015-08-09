@@ -4,7 +4,7 @@ from os import path as op
 from time import time
 from ckeditor.fields import RichTextField
 import mptt
-
+from fontawesome.fields import IconField
 ###########################
 # Добавляем модели данных #
 ###########################
@@ -253,6 +253,7 @@ class Person(models.Model):
     photo = models.ImageField(upload_to=upload_to, verbose_name='Фотография', blank=True)
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
+    icon = IconField()
 
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])

@@ -54,7 +54,7 @@ class ScienceRankAdmin(admin.ModelAdmin):
     list_display = ("science_rank", "short_science_rank", )
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ("last_name", "first_name", "middle_name", "address", "email", "photo", "publish_date", "publish", )
+    list_display = ("last_name", "first_name", "middle_name", "address", "email", "publish_date", "publish", )
     list_editable = ("publish", )
     list_filter = ("last_name",)
     filter_horizontal = ("unit", "position", "phone",)

@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = (
+    'suit',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.sites',
@@ -44,7 +45,9 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'haystack'
+    'haystack',
+    'fontawesome',
+    'django.forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -128,3 +131,37 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
     },
 }
+# Django Suit configuration example
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': 'Справочник МИТХТ',
+    'HEADER_DATE_FORMAT': 'l, j E Y',
+    'HEADER_TIME_FORMAT': 'H:i',
+
+    # forms
+    'SHOW_REQUIRED_ASTERISK': True,  # Default True
+    'CONFIRM_UNSAVED_CHANGES': True, # Default True
+
+    # menu
+    # 'SEARCH_URL': '/admin/auth/user/',
+    'MENU_ICONS': {
+        'phones': 'earphone',
+        'socialaccount': 'icon-leaf',
+        'sites': 'icon-leaf',
+        'auth': 'icon-lock',
+    },
+
+    # 'MENU_EXCLUDE': ('auth.group',),
+    # 'MENU': (
+    #     'sites',
+    #     {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
+    #     {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
+    #     {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
+    # ),
+
+    # misc
+    # 'LIST_PER_PAGE': 15
+}
+
+FONTAWESOME_CSS_URL = '//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'
+FONTAWESOME_PREFIX = 'fa'
