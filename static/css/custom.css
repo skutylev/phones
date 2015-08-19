@@ -1,0 +1,21 @@
+body {
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.collapsible-body p
+{
+    padding: 0.2rem 2rem 0.2rem 2rem;
+}
+
+p {font-size: 1rem;}
+h1 {font-size: 2rem;}
+h2 {font-size: 1.8rem;}
+h3 {font-size: 1.6rem;}
+h4 {font-size: 1.4rem;}
+h5 {font-size: 1.2rem;}
+h6 {font-size: 1rem;}

@@ -15,7 +15,8 @@ setuptools=18.1
 future==0.15.0
 virtualenv==13.1.0
 simplejson
-django-suit==0.2.13
+django-suit
 django-fontawesome
 pyyaml
 django-select2
+sorl-thumbnail

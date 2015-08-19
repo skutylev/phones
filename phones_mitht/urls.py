@@ -1,17 +1,11 @@
-from django.conf.urls import include, url
+from django.conf.urls import include, url, patterns
 from django.contrib import admin
-from phones.views import LoginView, ListPhonesView, DetailPhoneView, PhoneSearchView
+from django.conf.urls.static import static
+from django.conf import settings
 
-
-
-urlpatterns = [
-    url(r'^grappelli/', include('grappelli.urls')),
+urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^login/', LoginView.as_view()),
-    url(r'^phones/$', ListPhonesView.as_view()),
-    url(r'^phones/(?P<slug>[-\w]+)/details/$', DetailPhoneView.as_view(), name="phone_details"),
-    url(r'^search/$', include('haystack.urls')),
-    url(r'^search/$', PhoneSearchView.as_view(), name='search'),
-]
+    url(r'^phones/', include('phones.url'), name='phones'),
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

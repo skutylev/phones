@@ -1,54 +1,37 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, CreateView, DeleteView, DetailView, ListView, FormView
-from django.contrib.auth.models import User
-import allauth
-from django.contrib import auth
-from django.http import HttpResponseRedirect, Http404
-from django.utils import timezone
-from django.template import RequestContext, Context
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from phones.models import Person
-import simplejson as json
-from django.http import HttpResponse
-from haystack.query import SearchQuerySet
-from haystack.generic_views import SearchView
+from django.contrib.auth.models import User
 
-class LoginView(TemplateView):
-    template_name = 'accounts/login.html'
-
-class ListPhonesView(ListView):
-    template_name = 'phones/index.html'
+class ListPhones(ListView):
+    template_name = 'phones/phones.html'
     model = Person
+    context_object_name = 'list'
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
-        context = super(ListPhonesView, self).get_context_data(**kwargs)
+        context = super(ListPhones, self).get_context_data(**kwargs)
         return context
 
-class DetailPhoneView(DetailView):
+class DetailPhone(DetailView):
     template_name = 'phones/detail.html'
     model = Person
+    context_object_name = 'detail'
 
     def get_context_data(self, **kwargs):
-        context = super(DetailPhoneView, self).get_context_data(**kwargs)
+        context = super(DetailPhone, self).get_context_data(**kwargs)
         return context
 
+    # def get_queryset(self):
+    #    return User.objects.select_related('email')
 
-class PhoneSearchView(SearchView):
-    template_name = "search/search.html"
+class CreatePhone(CreateView):
+    model = Person
+    fields = ['first_name', 'last_name', 'middle_name', 'birthday',
+              'email', 'photo', 'unit', 'position', 'degree', 'science_rank',
+              'address', 'phone', 'work_hours']
 
-    def get_queryset(self):
-        queryset = super(PhoneSearchView, self).get_queryset()
-        return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(PhoneSearchView, self).get_context_data(*args, **kwargs)
-        return context
-
-    def autocomplete(request):
-        sqs = SearchQuerySet().autocomplete(content_auto=request.GET.get('q', ''))[:5]
-        suggestions = [result.last_name for result in sqs]
-        # Make sure you return a JSON object, not a bare list.
-        # Otherwise, you could be vulnerable to an XSS attack.
-        the_data = json.dumps({
-            'results': suggestions
-        })
-        return HttpResponse(the_data, content_type='application/json')
+class UpdatePhone(UpdateView):
+    model = Person
+    fields = ['first_name', 'last_name', 'middle_name', 'birthday',
+              'email', 'photo', 'unit', 'position', 'degree', 'science_rank',
+              'address', 'phone', 'work_hours']

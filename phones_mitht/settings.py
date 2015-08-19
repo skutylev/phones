@@ -15,7 +15,7 @@ import os
 from os.path import abspath, basename, dirname, join, normpath
 SITE_ID = 1
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 INSTALLED_APPS = (
     'suit',
-    'grappelli',
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.auth',
@@ -41,13 +40,16 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'phones',
     'ckeditor',
+    'mptt',
     'django_mptt_admin',
     'allauth',
+    'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'haystack',
     'fontawesome',
     'django.forms',
+    'sorl.thumbnail',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,6 +112,9 @@ STATICFILES_DIRS = (
     normpath(join(BASE_DIR, 'static')),
 )
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'phones',  'images')
+MEDIA_URL = '/media/'
+
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
     os.path.join(BASE_DIR, 'phones',  'templates'),
@@ -145,19 +150,16 @@ SUIT_CONFIG = {
     # menu
     # 'SEARCH_URL': '/admin/auth/user/',
     'MENU_ICONS': {
-        'phones': 'earphone',
+        'phones': 'icon-book',
         'socialaccount': 'icon-leaf',
         'sites': 'icon-leaf',
         'auth': 'icon-lock',
     },
 
-    # 'MENU_EXCLUDE': ('auth.group',),
-    # 'MENU': (
-    #     'sites',
-    #     {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
-    #     {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
-    #     {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
-    # ),
+    'MENU_EXCLUDE': ('socialaccount','sites'),
+    'MENU': (
+        {'app': 'phones', 'label':'Телефоны','models': ('person', '-', 'unit', 'position', 'degree', 'sciencerank', 'workhours', '-', 'address', 'city', 'street', 'building', 'campus', 'office', 'areacode', 'postcode', 'prefix', 'phone',)},
+    ),
 
     # misc
     # 'LIST_PER_PAGE': 15
@@ -165,3 +167,11 @@ SUIT_CONFIG = {
 
 FONTAWESOME_CSS_URL = '//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'
 FONTAWESOME_PREFIX = 'fa'
+
+
+SOCIALACCOUNT_PROVIDERS = \
+    {'google':
+        {'SCOPE': ['profile', 'email'],
+          'AUTH_PARAMS': {'access_type': 'online'}}}
+
+THUMBNAIL_PREFIX = 'images/cache/'
