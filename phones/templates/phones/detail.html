@@ -3,11 +3,11 @@
     <div class="row">
         <div class="col s10 offset-m1 m8 offset-l1 l8">
             <h1>{{ detail.last_name }} {{ detail.first_name }} {{ detail.middle_name }}</h1>
-            <p>{{ detail.position.first }}: <a href="#">{{ detail.unit.first }}</a></p>
+            <p>{{ detail.position.first }}: <a href="{{ detail.unit.first.get_absolute_url }}">{{ detail.unit.first }}</a></p>
         </div>
         <div class="col s2">
             {% thumbnail detail.photo "150x150" crop="center" as im %}
-                <img style="border-radius: 100px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                <img style="border: 1px #ee6e73 solid;" class="circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
         </div>
     </div>
@@ -28,7 +28,7 @@
                 </div>
                 <div id="edu" class="col l12">
                     <h5>Бакалавриат</h5>
-                    <p></p>
+                    <p>{% for edu in detail.edu.all %}{{ edu }}{% endfor %}</p>
                     <h5>Магистратура</h5>
                     <p></p>
                     <h5>Аспирантура</h5>
@@ -48,11 +48,24 @@
         </div>
         <div class="col l3">
             <h5>Контакты</h5>
-            <p>Телефон:<br />{% for phone in detail.phone.all %}{{ phone }}{% endfor %}</p>
+            <p>Телефон:<br />{% for phone in detail.phone.all %}{{ phone }}, {% endfor %}</p>
             <p>E-mail:<br /><a target="_blank" href="mailto:{{ detail.email }}">{{ detail.email }}</a></p>
             <p>Адрес:<br />{{ detail.address }}</p>
             <p>Часы работы:<br />{{ detail.work_hours }}</p>
-            <p>Руководитель:<br /><a href="{{ detail.leader.get_absolute_url }}">{{ detail.leader }}</a><br/></p>
+            {% if detail.chief == None %}
+            <p></p>
+            {% else %}
+            <p>Руководитель:<br /><a href="{{ detail.chief.get_absolute_url }}">{{ detail.chief }}</a><br/></p>
+            {% endif %}
+
+            <a class='dropdown-button blue btn' href='#' data-activates='dropdown1'>Подчиненные</a>
+            <ul id='dropdown1' class='dropdown-content'>
+                {% for sub in detail.get_subordinates %}
+                <li><a class="blue-text" href="#!">{{ sub }}</a></li>
+                {% empty %} <li><a href="#!">&ndash;</a></li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 {% endblock %}
+

@@ -20,3 +20,5 @@ django-fontawesome
 pyyaml
 django-select2
 sorl-thumbnail
+django-publications
+django-endless-pagination

@@ -50,9 +50,12 @@ INSTALLED_APPS = (
     'fontawesome',
     'django.forms',
     'sorl.thumbnail',
+    'publications',
+    'endless_pagination'
 )
 
 MIDDLEWARE_CLASSES = (
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
 )
 
 ROOT_URLCONF = 'phones_mitht.urls'
@@ -156,10 +160,10 @@ SUIT_CONFIG = {
         'auth': 'icon-lock',
     },
 
-    'MENU_EXCLUDE': ('socialaccount','sites'),
-    'MENU': (
-        {'app': 'phones', 'label':'Телефоны','models': ('person', '-', 'unit', 'position', 'degree', 'sciencerank', 'workhours', '-', 'address', 'city', 'street', 'building', 'campus', 'office', 'areacode', 'postcode', 'prefix', 'phone',)},
-    ),
+   # 'MENU_EXCLUDE': ('socialaccount','sites'),
+   # 'MENU': (
+   #      {'app': 'phones', 'label':'Телефоны','models': ('person', '-', 'unit', 'position', 'degree', 'sciencerank', 'workhours', '-', 'address', 'city', 'street', 'building', 'campus', 'office', 'areacode', 'postcode', 'prefix', 'phone',)},
+   # ),
 
     # misc
     # 'LIST_PER_PAGE': 15

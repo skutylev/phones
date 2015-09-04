@@ -1,61 +1,32 @@
 from django.db import models
 from hashlib import md5
 import os
-from time import time
 from ckeditor.fields import RichTextField
 import mptt
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 from phones.slugify import slugify
 from sorl.thumbnail import ImageField
-from django.utils.encoding import force_text as force_unicode
+
+
+############################
+# Автоматическая генерация #
+# имени файла в ImageField #
+############################
+
+def get_person_image_path(instance, filename):
+    filename = filename.encode('utf-8')
+    hashname = md5(filename).hexdigest() + '.jpg'
+    return os.path.join(hashname[:2], hashname[2:4],
+                        hashname)
 
 ###########################
 # Добавляем модели данных #
 ###########################
 
-# Справочник подразделений, с шифрами и иерархией
-
-
-class Unit(MPTTModel):
-    unit_cypher = models.CharField(max_length=10, verbose_name='Шифр', blank=True)
-    unit_name = models.CharField(max_length=100, verbose_name='Подразделение')
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', verbose_name='Родитель', db_index=True, )
-   # order = models.IntegerField(verbose_name='Порядок', default=1)
-
-    class MPTTMeta:
-     #   order_insertion_by = ['order']
-        level_attr = 'mptt_level'
-
-    class Meta:
-        verbose_name = 'Подразделение'
-        verbose_name_plural = 'Подразделения'
-
-    def save(self, *args, **kwargs):
-        super(Unit, self).save(*args, **kwargs)
-        Unit.objects.update()
-
-    def __str__(self):
-        return self.unit_name
-
-mptt.register(Unit,)
-
-# Справочник должностей, с начальниками и подчиненными
-class Position(models.Model):
-    position = models.CharField(max_length=50, verbose_name='Должность')
-    chief_position = models.CharField(max_length=50, verbose_name='Начальник', blank=True)
-
-    def __str__(self):
-        return self.position
-
-    class Meta:
-        verbose_name = 'Должность'
-        verbose_name_plural = 'Должности'
-        ordering = ['position']
-
 # Телефонные префиксы
 class Prefix(models.Model):
-    prefix = models.CharField(max_length=9, verbose_name='Префикс')
+    prefix = models.CharField(max_length=9, verbose_name='Префикс', default='1')
 
     def __str__(self):
         return self.prefix
@@ -67,7 +38,7 @@ class Prefix(models.Model):
 
 # Коды города
 class AreaCode(models.Model):
-    area_code = models.CharField(max_length=6, verbose_name='Код города')
+    area_code = models.CharField(max_length=6, verbose_name='Код города', default='1')
 
     def __str__(self):
         return self.area_code
@@ -79,7 +50,7 @@ class AreaCode(models.Model):
 
 # Почтовые индексы
 class PostCode(models.Model):
-    post_code = models.CharField(max_length=6, verbose_name='Почтовый индекс')
+    post_code = models.CharField(max_length=6, verbose_name='Почтовый индекс', default='1')
 
     def __str__(self):
         return self.post_code
@@ -90,8 +61,8 @@ class PostCode(models.Model):
         ordering = ['post_code']
 # Города
 class City(models.Model):
-    city = models.CharField(max_length=10, verbose_name='Город')
-    area_code = models.ManyToManyField(AreaCode, verbose_name="Код города")
+    city = models.CharField(max_length=10, verbose_name='Город', default='1')
+    area_code = models.ManyToManyField(AreaCode, verbose_name="Код города", default='1')
 
     def __str__(self):
         return self.city
@@ -103,8 +74,8 @@ class City(models.Model):
 
 # Улицы
 class Street(models.Model):
-    street = models.CharField(max_length=40, verbose_name='Улица')
-    post_code = models.ManyToManyField(PostCode, verbose_name="Почтовый индекс")
+    street = models.CharField(max_length=40, verbose_name='Улица', default='1')
+    post_code = models.ManyToManyField(PostCode, verbose_name="Почтовый индекс", default='1')
 
     def __str__(self):
         return self.street
@@ -116,7 +87,7 @@ class Street(models.Model):
 
 # Здания
 class Building(models.Model):
-    building = models.CharField(max_length=5, verbose_name='Здание')
+    building = models.CharField(max_length=5, verbose_name='Здание', default='1')
 
     def __str__(self):
         return self.building
@@ -128,8 +99,8 @@ class Building(models.Model):
 
 # Корпуса в зданиях
 class Campus(models.Model):
-    campus = models.CharField(max_length=5, verbose_name='Корпус')
-    prefix = models.ManyToManyField(Prefix, verbose_name='Префикс')
+    campus = models.CharField(max_length=5, verbose_name='Корпус', default='1')
+    prefix = models.ManyToManyField(Prefix, verbose_name='Префикс', default='1')
 
     def __str__(self):
         return self.campus
@@ -195,6 +166,31 @@ class Address(models.Model):
         verbose_name_plural = 'Адреса'
         ordering = ['street']
 
+# Образование
+class Edu(models.Model):
+    EDU_CHOICES = (
+        ('Бакалавриат', 'Бакалавриат'),
+        ('Магистратура', 'Магистратура'),
+        ('Аспирантура', 'Аспирантура'),
+    )
+    level = models.CharField(max_length=255, choices=EDU_CHOICES, verbose_name='Образование')
+    university = models.CharField(max_length=255, verbose_name='Университет')
+    faculty = models.CharField(max_length=255, verbose_name='Факультет')
+    department = models.CharField(max_length=255, verbose_name='Кафедра')
+    speciality = models.CharField(max_length=255, verbose_name='Специальность')
+    graduate = models.DateField(verbose_name='Дата окончания')
+    key = models.ForeignKey('self',)
+
+    def get_absolute_url(self):
+        return "/phones/%s/" % self.id
+
+    def __str__(self):
+          return u'%s: %s %s, %s, %s, %s' % (self.level, self.graduate, self.university, self.faculty, self.department, self.speciality)
+
+    class Meta:
+        verbose_name = 'Образование'
+        verbose_name_plural = 'Образования'
+
 # Ученые степени
 class Degree(models.Model):
     degree = models.CharField(max_length=50, verbose_name='Ученая степень')
@@ -219,18 +215,6 @@ class ScienceRank(models.Model):
         verbose_name = 'Ученое звание'
         verbose_name_plural = 'Ученые звания'
 
-############################
-# Автоматическая генерация #
-# имени файла в ImageField #
-############################
-
-
-def get_person_image_path(instance, filename):
-    filename = filename.encode('utf-8')
-    hashname = md5(filename).hexdigest() + '.jpg'
-    return os.path.join(hashname[:2], hashname[2:4],
-                        hashname)
-
 # Справочник организаций
 class Organization(models.Model):
     org_name = models.CharField(max_length=100, verbose_name='Название организации')
@@ -248,26 +232,70 @@ class Organization(models.Model):
         verbose_name_plural = 'Организации'
         ordering = ['org_name']
 
+# Справочник подразделений, с шифрами и иерархией
+class Unit(MPTTModel, models.Model):
+    unit_cypher = models.CharField(max_length=15, verbose_name='Шифр', blank=True)
+    unit_name = models.CharField(max_length=200, verbose_name='Подразделение')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', verbose_name='Родитель', db_index=True, )
+    slug = models.SlugField(max_length=255, verbose_name='Ссылка', blank=True)
+
+    class MPTTMeta:
+        level_attr = 'mptt_level'
+
+    class Meta:
+        verbose_name = 'Подразделение'
+        verbose_name_plural = 'Подразделения'
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.unit_name)
+        super(Unit, self).save(*args, **kwargs)
+        Unit.objects.update()
+
+    def get_acronym(self):
+        return ''.join(e[0] for e in self.unit_name.split())
+
+    def get_absolute_url(self):
+        return "/phones/%s/" % self.slug
+
+    def __str__(self):
+        return self.unit_name
+
+mptt.register(Unit,)
+
+# Справочник должностей, с начальниками и подчиненными
+class Position(models.Model):
+    position = models.CharField(max_length=100, verbose_name='Должность')
+
+    def __str__(self):
+        return self.position
+
+    class Meta:
+        verbose_name = 'Должность'
+        verbose_name_plural = 'Должности'
+        ordering = ['position']
+
 # И наконец люди
 class Person(models.Model):
-    user = models.ForeignKey(User, verbose_name='Пользователь')
+    user = models.OneToOneField(User, verbose_name='Пользователь', blank=True, null=True, )
     last_name = models.CharField(max_length=30, verbose_name='Фамилия')
     first_name = models.CharField(max_length=30, verbose_name='Имя')
     middle_name = models.CharField(max_length=30, verbose_name='Отчество')
     birthday = models.DateField(verbose_name='Дата рождения', blank=True, default='00.00.0000')
     email = models.EmailField(verbose_name='Email', blank=True)
-    photo = models.ImageField(upload_to=get_person_image_path, verbose_name='Фотография', blank=True, default='phones/images/default.jpg')
+    photo = models.ImageField(upload_to=get_person_image_path, verbose_name='Фотография', blank=True, default=None
+                              )
     slug = models.SlugField(max_length=30, verbose_name='Ссылка', blank=True)
-    unit = models.ManyToManyField(Unit, verbose_name='Подразделение')
-    position = models.ManyToManyField(Position, verbose_name='Должность')
-    degree = models.ForeignKey(Degree, verbose_name='Ученая степень', default='3')
-    science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание', default='3')
-    address = models.ForeignKey(Address, verbose_name='Адрес')
-    phone = models.ManyToManyField(Phone, verbose_name='Телефон')
-    work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы')
+    unit = models.ManyToManyField(Unit, verbose_name='Подразделение', related_name='units')
+    position = models.ManyToManyField(Position, verbose_name='Должность', related_name='positions', blank=True, null=True)
+    edu = models.ManyToManyField(Edu, verbose_name='Образование', blank=True, null=True)
+    degree = models.ForeignKey(Degree, verbose_name='Ученая степень', default='3', related_name='degrees')
+    science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание', default='3', related_name='science_ranks')
+    address = models.ForeignKey(Address, verbose_name='Адрес', related_name='address', blank=True, null=True)
+    phone = models.ManyToManyField(Phone, verbose_name='Телефон', related_name='phone', blank=True)
+    work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы', related_name='work_hours')
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
-    leader = models.ForeignKey('self', verbose_name='Руководитель', blank='True', null='True')
+    chief = models.ForeignKey('self', verbose_name='Руководитель', blank=True, null=True, related_name='subordinates')
 
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
@@ -282,7 +310,15 @@ class Person(models.Model):
     def get_absolute_url(self):
         return "/phones/%s/" % self.slug
 
+    def get_subordinates(self):
+        subordinates = Person.objects.filter(chief_id=self.id)
+        return subordinates
+
+    def get_full_phone(self):
+        full_phone = Person.phone.select_related('phone')
+        return full_phone
+
     class Meta:
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
-        ordering = ['last_name']
+        ordering = ['-publish_date']

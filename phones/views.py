@@ -1,16 +1,17 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from phones.models import Person
+from django.core import paginator
+
 from django.contrib.auth.models import User
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
     model = Person
     context_object_name = 'list'
-    paginate_by = 10
-
     def get_context_data(self, **kwargs):
         context = super(ListPhones, self).get_context_data(**kwargs)
         return context
+
 
 class DetailPhone(DetailView):
     template_name = 'phones/detail.html'
@@ -19,10 +20,8 @@ class DetailPhone(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailPhone, self).get_context_data(**kwargs)
+        #subordinates = Person.objects.select_related('subordinates').all().get(id='')
         return context
-
-    # def get_queryset(self):
-    #    return User.objects.select_related('email')
 
 class CreatePhone(CreateView):
     model = Person

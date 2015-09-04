@@ -1,5 +1,5 @@
 from django.contrib import admin
-from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCode, City, Street, Building, Campus, Office, WorkHours, Phone, Address, Person, Degree, ScienceRank
+from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCode, City, Street, Building, Campus, Office, WorkHours, Phone, Address, Person, Degree, ScienceRank, Edu
 from django.forms import ModelForm
 from suit.widgets import EnclosedInput
 from mptt.admin import MPTTModelAdmin
@@ -11,11 +11,11 @@ admin.site.register(Organization, OrganizationAdmin)
 class UnitAdmin(MPTTModelAdmin):
     mptt_level_indent = 20
     mptt_indent_field = "unit_name"
-    list_display = ('unit_cypher', 'unit_name', 'parent')
+    list_display = ('unit_name', 'unit_cypher', )
 admin.site.register(Unit, UnitAdmin)
 
 class PositionAdmin(admin.ModelAdmin):
-    list_display = ("position", "chief_position", )
+    list_display = ("position", )
 admin.site.register(Position, PositionAdmin)
 
 class PrefixAdmin(admin.ModelAdmin):
@@ -78,15 +78,17 @@ class ScienceRankAdmin(admin.ModelAdmin):
     list_display = ("science_rank", "short_science_rank", )
 admin.site.register(ScienceRank, ScienceRankAdmin)
 
-class PersonAdmin(admin.ModelAdmin):
-    """def (obj):
-        return ("%s %s" % (obj.first_name, obj.last_name)).upper()
-    upper_case_name.short_description = 'Name'
-    """
-    list_display = ("last_name", "first_name", "middle_name", "address", "email", "get_phones", "publish_date", "publish", )
-    list_editable = ("publish", )
-    list_filter = ("unit",)
-    filter_horizontal = ("unit", "position", "phone",)
-    search_fields = ("last_name",)
+class EduAdmin(admin.ModelAdmin):
+    list_display = ('level',)
+    model = Edu
+    extra = 1
+    max_num = 5
+admin.site.register(Edu, EduAdmin)
 
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ("last_name", "first_name", "middle_name", "address", "email", "get_phones", "publish_date", "publish" )
+    list_editable = ("publish",)
+    list_filter = ("unit",)
+    filter_horizontal = ("unit", "position", "phone")
+    search_fields = ("last_name",)
 admin.site.register(Person, PersonAdmin)
