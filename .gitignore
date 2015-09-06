@@ -68,6 +68,9 @@ __pycache__/
 # C extensions
 *.so
 
+/phones/templates/phones/phones.html
+/phones/search_indexes.py
+/phones/templates/include
 # Distribution / packaging
 .Python
 env/
