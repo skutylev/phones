@@ -308,7 +308,7 @@ class Person(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return "/phones/%s/" % self.slug
+        return "/%s/" % self.slug
 
     def get_subordinates(self):
         subordinates = Person.objects.filter(chief_id=self.id)
