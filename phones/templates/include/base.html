@@ -1,0 +1,90 @@
+<!DOCTYPE html>{% load staticfiles %} {% load fontawesome %} {% load admin_urls %}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    {% block title %}
+        <title>Телефонный справочник МИТХТ</title>
+    {% endblock %}
+
+    {% block head_css %}
+        {% fontawesome_stylesheet %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static "materialize/css/materialize.min.css" %}" media="screen,projection"/>
+        <link rel="stylesheet" type="text/css" href="{% static "css/custom.css" %}" media="screen,projection"/>
+
+    {% endblock %}
+
+    {% block head_js %}
+        <script type="text/javascript" src="{% static "js/jquery-2.1.4.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "materialize/js/materialize.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/search_ajax.js" %}"></script>
+    {% endblock %}
+    {# Если уже используются базовые CSS и JS, то все остальное можно добавить в head_other #}
+    {% block head_other %}{% endblock %}
+</head>
+
+{% block body %}
+<body>
+    {% block header %}
+        <nav class="light-blue darken-1 row">
+            <div class="nav-wrapper navbar-fixed col s12 offset-m1 m10 offset-l1 l10"">
+            <a href="#" class="brand-logo">Справочник МИТХТ</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li>
+                        <form id="search" method="get" action="/phones/search/?=">
+                            {% csrf_token %}
+                            <div class="input-field">
+                                <input autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+                                <ul id="search-results">
+
+                                </ul>
+                            </div>
+                        </form>
+                    </li>
+                    <li><a href="/phones">Телефоны</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'account_email' %}">Изменить E-mail</a></li>
+                    <li><a href="{% url 'account_logout' %}">Выйти</a></li>
+                    {% else %}
+                    <li><a href="{% url 'account_login' %}">Войти</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </nav>
+    {% endblock %}
+{% if messages %}
+    <div>
+      <ul>
+	{% for message in messages %}
+	<li>{{message}}</li>
+	{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div>
+      <ul>
+
+      </ul>
+    </div>
+    {% block content %}{% endblock %}
+
+    {% block footer %}
+        <footer class="light-blue darken-1 page-footer">
+            <nav class="light-blue darken-1 row">
+                <div class="col s12 offset-m1 m10 offset-l1 l10">
+                    <ul>
+                        <li class="hide-on-med-and-down"><a href="#">Защита персональных данных</a></li>
+                        <li><a href="#">Тех. поддержка</a></li>
+                    </ul>
+                    <span class="right">МИТХТ &copy; 2015</span>
+                </div>
+            </nav>
+        </footer>
+    {% endblock %}
+</body>
+{% endblock %}
+</html>
