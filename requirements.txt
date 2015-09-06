@@ -10,10 +10,10 @@ django-jquery-js==2.1.4
 django-mptt
 django_mptt_admin
 elasticsearch
-pip==7.1.0
-setuptools=18.1
+pip
+setuptools
 future==0.15.0
-virtualenv==13.1.0
+virtualenv
 simplejson
 django-suit
 django-fontawesome
@@ -25,4 +25,3 @@ django-endless-pagination
 celery
 celery-haystack
 django-celery
-django-fixture-magic
