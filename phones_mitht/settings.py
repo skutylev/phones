@@ -109,7 +109,7 @@ WSGI_APPLICATION = 'phones_mitht.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-if socket.gethostname() == 'lms.kutylev.com':
+if socket.gethostname() == 'phonebook.mitht.net':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -127,10 +127,6 @@ else:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-
-
-
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
