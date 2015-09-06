@@ -1,0 +1,7 @@
+{% if people.count > 0 %}
+    {% for person in people %}
+        <li><a href="{{ person.get_absolute_url }}">{{ person.last_name }}</a></li>
+    {% endfor %}
+{% else %}
+    <li>Таких нет</li>
+{%  endif %}

@@ -1,5 +1,5 @@
 django==1.8.3
-pillow=2.9.0
+pillow==2.9.0
 unidecode==0.4.18
 django-allauth
 django-ckeditor==4.5.1
@@ -10,7 +10,7 @@ django-jquery-js==2.1.4
 django-mptt
 django_mptt_admin
 elasticsearch
-pip=7.1.0
+pip==7.1.0
 setuptools=18.1
 future==0.15.0
 virtualenv==13.1.0
@@ -22,3 +22,7 @@ django-select2
 sorl-thumbnail
 django-publications
 django-endless-pagination
+celery
+celery-haystack
+django-celery
+django-fixture-magic

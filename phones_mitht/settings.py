@@ -51,7 +51,10 @@ INSTALLED_APPS = (
     'django.forms',
     'sorl.thumbnail',
     'publications',
-    'endless_pagination'
+    'endless_pagination',
+    'celery',
+    'celery_haystack',
+    'fixture_magic',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,6 +88,11 @@ TEMPLATES = [
         },
     },
 ]
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
 
 WSGI_APPLICATION = 'phones_mitht.wsgi.application'
 
@@ -179,3 +187,4 @@ SOCIALACCOUNT_PROVIDERS = \
           'AUTH_PARAMS': {'access_type': 'online'}}}
 
 THUMBNAIL_PREFIX = 'images/cache/'
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
