@@ -25,12 +25,12 @@ _PATH = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = '4%u+lvugiuaoy7_p&$l#r8asi)5jp@di&$&h0%=g70t6kyv1%9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if socket.gethostname() == 'webhost3.mitht.net':
+if socket.gethostname() == 'webhost3':
     DEBUG = TEMPLATE_DEBUG = False
 else:
     DEBUG = TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['webhost3.mitht.net', '127.0.0.1']
+ALLOWED_HOSTS = ['webhost3', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = (
@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'phones_mitht.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-if socket.gethostname() == 'webhost3.mitht.net':
+if socket.gethostname() == 'webhost3':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
