@@ -1,60 +1,59 @@
-{% extends "include/base.html" %}{% load fontawesome %} {% load thumbnail %} {% load endless %}
+{% extends "include/base.html" %}{% load fontawesome %} {% load thumbnail %}
 {% block content %}
     <div class="row">
         <div class="col s12 offset-m1 m10 offset-l1 l10">
+        <ul class="collapsible" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><span>Часто используемые телефоны: <i class="material-icons right">expand_more</i></span> </div>
+                <div class="collapsible-body">
+                    <p>Приемная ректора - тел. +7 (499) 600-82-06</p>
+                    <p>Канцелярия - тел. +7 (499) 600-88-25</p>
+                    <p>Приемная комиссия - тел. +7 (499) 600-82-49</p>
+                    <p>Директор по экономике - тел. +7 (499) 600-82-18</p>
+                    <p>Проректор по уч. работе - тел. +7 (499) 600-82-11</p>
+                    <p>Проректор по НИД - тел. +7 (499) 600-82-02</p>
+                </div>
+            </li>
+        </ul>
         <h4>Последние добавленные</h4>
+        <ul class="collapsible" data-collapsible="accordion">
+        {% for person in list %}
+            <li>
+              <div class="collapsible-header">
+              <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
+                {% if person.photo %}
+                    {% thumbnail person.photo "27x27" quality=99 crop="center" as im %}
+                    <img class="circle" style="margin-top: 0.6rem;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ person.last_name }}">
+                    {% endthumbnail %}
+                {% else %}
+                    <i class="material-icons">person</i>
+                {% endif %}
+                {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
+              </div>
+                  <div class="col l8 hide-on-med-and-down" style="font-size: 0.8rem">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</div>
+                  <div class="col l1 m4 right">
+                      {% if person.phone %}
+                         тел. {{ person.phone.first }}
+                      {% endif %}
+                  </div>
+              </div>
+              <div class="collapsible-body">
+                <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
+                    <div class="col l3"><i class="material-icons left">phone</i>{{ person.get_phones }}</div>
+                    <div class="col l3"><i class="material-icons left">mail</i>{{ person.email }}</div>
+                    <div class="col l3"><i class="material-icons left">place</i>{{ person.address }}</div>
+                    <div class="col l3">
+                        <a class="btn-flat red-text text-lighten-2" href="{{ person.get_absolute_url }}"><i class="material-icons right">more_vert</i>Подробнее</a><br/>
+                        <a class="btn-flat red-text text-lighten-2" href="mailto:{{ person.email }}"><i class="material-icons right">send</i>Письмо</a>
+                    </div>
+                </div>
+              </div>
+            </li>
+        {% endfor %}
+        </ul>
 
-
-        <ul class="collapsible popout" data-collapsible="accordion">
-        {% paginate list %}
-            {% for person in list %}
-    <li>
-      <div class="collapsible-header">
-
-      <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
-        {% if person.photo %}
-            {% thumbnail person.photo "27x27" quality=99 crop="center" as im %}
-            <img class="circle" style="margin-top: 0.6rem;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ person.last_name }}">
-            {% endthumbnail %}
-        {% else %}
-            {% fontawesome_icon 'user grey-text text-lighten-1' %}
-        {% endif %}
-        {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
-      </div>
-          <div class="col l8 hide-on-med-and-down" style="font-size: 0.8rem">{{ person.unit.first | slice:":25"}} / {{ person.position.first }}</div>
-          <div class="col l1 m4 right">
-              {% if person.phone %}
-                 тел. {{ person.phone.first }}
-
-              {% endif %}
-          </div>
-      </div>
-      <div class="collapsible-body">
-        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-          <div class="col l4"><p>{% fontawesome_icon 'phone' %}&nbsp;&nbsp;{{ person.get_phones }}</p></div>
-          <div class="col l4"><p>{% fontawesome_icon 'envelope' %}&nbsp;&nbsp;{{ person.email }}</p></div>
-          <div class="col l4"><p>{% fontawesome_icon 'map-marker' %}&nbsp;&nbsp;{{ person.address }}</p></div>
-
-        <div class="fixed-action-btn center">
-
-            <a class="waves-effect waves-light red darken1 btn" href="{{ person.get_absolute_url }}">{% fontawesome_icon 'user'%} Подробнее</a>
-          <a class="waves-effect waves-light red darken-1 btn" href="mailto:{{ person.email }}">{% fontawesome_icon 'paper-plane-o'%} Письмо</a>
-        </div>
-        </div>
-      </div>
-    </li>
-    {% endfor %}
-    </ul>
-        {% show_pages %}
- <ul class="pagination">
-    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-    <li class="active"><a href="#!">1</a></li>
-    <li class="waves-effect"><a href="#!">2</a></li>
-    <li class="waves-effect"><a href="#!">3</a></li>
-    <li class="waves-effect"><a href="#!">4</a></li>
-    <li class="waves-effect"><a href="#!">5</a></li>
-    <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-  </ul>
+        {% include "include/pagination.html" %}
+    </div>
     </div>
     </div>
 

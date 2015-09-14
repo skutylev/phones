@@ -86,9 +86,9 @@ class EduAdmin(admin.ModelAdmin):
 admin.site.register(Edu, EduAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ("last_name", "first_name", "middle_name", "address", "email", "get_phones", "publish_date", "publish" )
+    list_display = ("last_name", "first_name", "middle_name", "email", "get_phones", "publish_date", "publish" )
     list_editable = ("publish",)
-    list_filter = ("unit",)
-    filter_horizontal = ("unit", "position", "phone")
+    list_filter = ("unit", "chief")
+    filter_horizontal = ("unit", "position", "phone", "address", )
     search_fields = ("last_name",)
 admin.site.register(Person, PersonAdmin)

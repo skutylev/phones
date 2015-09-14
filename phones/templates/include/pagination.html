@@ -1,0 +1,28 @@
+{% if is_paginated %}
+<ul class="pagination">
+  {% if page_obj.number != page_obj.previous_page_number %}
+    <li class="prev disabled"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+  {% endif %}
+    <li class="pages">
+        <ul>
+  {% for page in page_obj.paginator.page_range %}
+    {% if page != page_obj.number %}
+
+
+            <li class="waves-effect"><a href="?page={{ page }}">{{ page }}</a></li>
+
+
+    {% else %}
+      <li class="active">{{ page }}</li>
+    {% endif %}
+  {% endfor %}
+            </ul>
+
+    </li>
+  {% if page_obj.number != page_obj.next_page_number %}
+    <li class="next waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+  {% endif %}
+</ul>
+{% endif %}
+
+

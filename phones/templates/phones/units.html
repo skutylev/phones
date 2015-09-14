@@ -1,0 +1,6 @@
+{% extends "include/base.html" %}{% load fontawesome %} {% load thumbnail %}
+{% block content %}
+    {% for per in units.get_persons %}
+        1 {{ per }}
+    {% endfor %}
+{% endblock %}

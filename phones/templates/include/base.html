@@ -28,62 +28,63 @@
 {% block body %}
 <body>
     {% block header %}
-        <nav class="light-blue darken-1 row">
-            <div class="nav-wrapper navbar-fixed col s12 offset-m1 m10 offset-l1 l10"">
-            <a href="#" class="brand-logo">Справочник МИТХТ</a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li>
-                        <form id="search" method="get" action="/search/?=">
-                            {% csrf_token %}
-                            <div class="input-field">
-                                <input autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
-                                <ul id="search-results">
-
-                                </ul>
-                            </div>
-                        </form>
-                    </li>
-                    <li><a href="/">Телефоны</a></li>
-                    {% if user.is_authenticated %}
-                    <li><a href="{% url 'account_email' %}">Изменить E-mail</a></li>
-                    <li><a href="{% url 'account_logout' %}">Выйти</a></li>
-                    {% else %}
-                    <li><a href="{% url 'account_login' %}">Войти</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-
-        </nav>
+        <div class="navbar-fixed row">
+            <nav class="light-blue darken-1">
+                <div class="nav-wrapper">
+                    <div class="col s12 offset-m1 m10 offset-l1 l10">
+                    <a href="#" class="brand-logo">Справочник МИТХТ</a>
+                    <ul class="right hide-on-med-and-down">
+                        <li>
+                            <form id="search" method="get" action="/search/?=">
+                                {% csrf_token %}
+                                <div class="input-field">
+                                    <input class="light-blue darken-2" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+                                </div>
+                            </form>
+                        </li>
+                        <li><a href="/">Телефоны</a></li>
+                        <li><a href="/units">Подразделения</a></li>
+                        <li>|</li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'account_logout' %}">ВЫЙТИ</a></li>
+                        {% else %}
+                        <li><a href="{% url 'account_login' %}">ВОЙТИ</a></li>
+                        {% endif %}
+                    </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
     {% endblock %}
-{% if messages %}
+
+    {% if messages %}
     <div>
       <ul>
-	{% for message in messages %}
-	<li>{{message}}</li>
-	{% endfor %}
+    {% for message in messages %}
+    <li>{{message}}</li>
+    {% endfor %}
       </ul>
     </div>
     {% endif %}
 
-    <div>
-      <ul>
-
-      </ul>
-    </div>
     {% block content %}{% endblock %}
 
     {% block footer %}
-        <footer class="light-blue darken-1 page-footer">
-            <nav class="light-blue darken-1 row">
-                <div class="col s12 offset-m1 m10 offset-l1 l10">
-                    <ul>
-                        <li class="hide-on-med-and-down"><a href="#">Защита персональных данных</a></li>
-                        <li><a href="#">Тех. поддержка</a></li>
-                    </ul>
-                    <span class="right">МИТХТ &copy; 2015</span>
+        <div class="row" style="margin-bottom: 0;">
+            <footer>
+                <div class="footer-nav">
+                    <nav class="light-blue darken-1">
+                        <div class="col s12 offset-m1 m10 offset-l1 l10">
+                            <ul>
+                                <li class="hide-on-med-and-down"><a href="#">Защита персональных данных</a></li>
+                                <li><a href="#">Тех. поддержка</a></li>
+                            </ul>
+                            <span class="right">МИТХТ &copy; 2015</span>
+                        </div>
+                    </nav>
                 </div>
-            </nav>
-        </footer>
+            </footer>
+        </div>
     {% endblock %}
 </body>
 {% endblock %}

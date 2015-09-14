@@ -18,6 +18,8 @@ SITE_ID = 1
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _PATH = os.path.abspath(os.path.dirname(__file__))
 
+INTERNAL_IPS = ( '93.180.6.13', )
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -25,12 +27,10 @@ _PATH = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = '4%u+lvugiuaoy7_p&$l#r8asi)5jp@di&$&h0%=g70t6kyv1%9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if socket.gethostname() == 'webhost3':
-    DEBUG = TEMPLATE_DEBUG = False
-else:
-    DEBUG = TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['webhost3', '127.0.0.1']
+DEBUG = TEMPLATE_DEBUG = True
+
+ALLOWED_HOSTS = ['webhost3', 'kutylev.mitht.net']
 
 # Application definition
 INSTALLED_APPS = (
@@ -55,10 +55,11 @@ INSTALLED_APPS = (
     'django.forms',
     'sorl.thumbnail',
     'publications',
-    'endless_pagination',
     'celery',
     'celery_haystack',
     'fixture_magic',
+    'debug_toolbar.apps.DebugToolbarConfig',
+    'django_select2',
 )
 
 MIDDLEWARE_CLASSES = (

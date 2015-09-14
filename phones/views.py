@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from phones.models import Person
+from phones.models import Person, Unit
 from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
@@ -7,16 +7,25 @@ from django.db.models import Q
 from haystack.query import SearchQuerySet
 
 
-from django.contrib.auth.models import User
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
     model = Person
     context_object_name = 'list'
+    paginate_by = 10
+
     def get_context_data(self, **kwargs):
         context = super(ListPhones, self).get_context_data(**kwargs)
         return context
 
+class ListUnits(ListView):
+    template_name = 'phones/units.html'
+    model = Unit
+    context_object_name = 'units'
+
+    def get_context_data(self, **kwargs):
+        context = super(ListUnits, self).get_context_data(**kwargs)
+        return context
 
 class DetailPhone(DetailView):
     template_name = 'phones/detail.html'

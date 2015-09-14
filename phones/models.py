@@ -7,6 +7,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 from phones.slugify import slugify
 from sorl.thumbnail import ImageField
+from django_select2 import Select2ChoiceField
 
 
 ############################
@@ -256,10 +257,14 @@ class Unit(MPTTModel, models.Model):
         return ''.join(e[0] for e in self.unit_name.split())
 
     def get_absolute_url(self):
-        return "/phones/%s/" % self.slug
+        return "/units/%s/" % self.slug
 
     def __str__(self):
         return self.unit_name
+
+    def get_person(self):
+        persons = Person.objects.all
+        return persons
 
 mptt.register(Unit,)
 
@@ -286,11 +291,11 @@ class Person(models.Model):
     photo = models.ImageField(upload_to=get_person_image_path, verbose_name='Фотография', blank=True, default=None)
     slug = models.SlugField(max_length=30, verbose_name='Ссылка', blank=True)
     unit = models.ManyToManyField(Unit, verbose_name='Подразделение', related_name='units')
-    position = models.ManyToManyField(Position, verbose_name='Должность', related_name='positions', blank=True, null=True)
-    edu = models.ManyToManyField(Edu, verbose_name='Образование', blank=True, null=True)
+    position = models.ManyToManyField(Position, verbose_name='Должность', related_name='positions', blank=True)
+    edu = models.ManyToManyField(Edu, verbose_name='Образование', blank=True)
     degree = models.ForeignKey(Degree, verbose_name='Ученая степень', default='3', related_name='degrees')
     science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание', default='3', related_name='science_ranks')
-    address = models.ForeignKey(Address, verbose_name='Адрес', related_name='address', blank=True, null=True)
+    address = models.ManyToManyField(Address, verbose_name='Адрес', related_name='address', blank=True)
     phone = models.ManyToManyField(Phone, verbose_name='Телефон', related_name='phone', blank=True)
     work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы', related_name='work_hours')
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
