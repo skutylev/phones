@@ -57,6 +57,7 @@ class WorkHoursAdmin(admin.ModelAdmin):
     list_display = ("begin_hours", "end_hours", )
 admin.site.register(WorkHours, WorkHoursAdmin)
 
+
 class PhoneForm(ModelForm):
     class Meta:
         widgets = {'number': EnclosedInput(prepend='внутр.'),}
