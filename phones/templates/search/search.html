@@ -64,7 +64,7 @@
                                                                         {% endif %}
                                                                         {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
                                                                     </div>
-                                                                    <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</div>
+                                                                    <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem"><span class="truncate">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</span></div>
                                                                     <div class="col l2 m4 right" style="font-size: 0.8rem">
                                                                         {% if person.phone %}
                                                                             <span>{{ person.phone.first }}</span>
