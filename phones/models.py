@@ -150,7 +150,7 @@ class Phone(models.Model):
         if self.is_outer is False:
             return u'внутр. %s' % (self.number,)
         else:
-            return u'%s(%s)%s%s' % (self.country_code, self.area_code, self.prefix, self.number)
+            return u'%s (%s) %s%s' % (self.country_code, self.area_code, self.prefix, self.number)
 
     class Meta:
         verbose_name = 'Телефон'

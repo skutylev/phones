@@ -28,6 +28,7 @@
 {% block body %}
 <body>
     {% block header %}
+        <header>
         <div class="navbar-fixed row">
             <nav class="light-blue darken-1">
                 <div class="nav-wrapper">
@@ -55,6 +56,7 @@
                 </div>
             </nav>
         </div>
+        </header>
     {% endblock %}
 
     {% if messages %}
@@ -66,12 +68,13 @@
       </ul>
     </div>
     {% endif %}
-
+    <main>
     {% block content %}{% endblock %}
-
+    </main>
     {% block footer %}
-        <div class="row" style="margin-bottom: 0;">
+
             <footer>
+            <div class="row" style="margin-bottom: 0;">
                 <div class="footer-nav">
                     <nav class="light-blue darken-1">
                         <div class="col s12 offset-m1 m10 offset-l1 l10">
@@ -83,8 +86,9 @@
                         </div>
                     </nav>
                 </div>
+                </div>
             </footer>
-        </div>
+
     {% endblock %}
 </body>
 {% endblock %}

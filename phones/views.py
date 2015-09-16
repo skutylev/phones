@@ -64,7 +64,7 @@ def search_people(request):
     return render_to_response('search/ajax_search.html', {'people': people})
 
 
-class UnitSearchView(SearchView):
-    template_name = 'search/unit.html'
-    queryset = SearchQuerySet().all()
-    context_object_name = 'results'
+# class UnitSearchView(SearchView):
+#     template_name = 'search/unit.html'
+#     queryset = SearchQuerySet().all()
+#     context_object_name = 'object_list'

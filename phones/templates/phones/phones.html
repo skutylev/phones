@@ -17,13 +17,16 @@
         </ul>
         <h4>Последние добавленные</h4>
         <ul class="collapsible" data-collapsible="accordion">
+         <div class="fixed-action-btn" style="bottom: 70px; right: 50px; cursor: help;">
+             <i class="material-icons red-text text-lighten-4 right tooltipped" style="font-size: 50px;" data-tooltip="Не из сети МИТХТ необходимо набрать +7(495)246-05-55 и внутренний номер">help</i>
+         </div>
         {% for person in list %}
             <li>
-              <div class="collapsible-header">
+              <div class="collapsible-header valign-wrapper">
               <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
                 {% if person.photo %}
                     {% thumbnail person.photo "27x27" quality=99 crop="center" as im %}
-                    <img class="circle" style="margin-top: 0.6rem;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ person.last_name }}">
+                    <img class="circle responsive-img" style="margin-left: 2px; margin-right: 15px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ person.last_name }}">
                     {% endthumbnail %}
                 {% else %}
                     <i class="material-icons">person</i>
@@ -33,7 +36,7 @@
                   <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</div>
                   <div class="col l2 m4 right" style="font-size: 0.8rem">
                       {% if person.phone %}
-                         <span>{{ person.phone.first }} <i class="material-icons right tooltipped" data-tooltip="Не из сети МИТХТ необходимо набрать +7(495)246-05-55 и внутр. номер">help</i></span>
+                         <span>{{ person.phone.first }}</span>
                       {% endif %}
                   </div>
               </div>

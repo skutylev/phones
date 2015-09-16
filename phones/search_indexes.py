@@ -23,6 +23,6 @@ class UnitIndex(indexes.SearchIndex, indexes.Indexable):
         return Unit
 
     def index_queryset(self, using=None):
-        return self.get_model().objects.all()
+        return self.get_model().objects.all().order_by('unit_name')
 
 
