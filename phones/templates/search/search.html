@@ -7,6 +7,7 @@
                 <div class="wrapper">
                     <form method="get" action="">
                             {% if query %}
+                                {{ result.object.unit_name }}{{ result.object.unit_cypher }}
                                         <ul class="collapsible popout" data-collapsible="accordion">
                                         <h4>Результаты</h4>
                                             {% for result in page.object_list %}

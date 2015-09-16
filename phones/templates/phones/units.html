@@ -1,6 +1,7 @@
-{% extends "include/base.html" %}{% load fontawesome %} {% load thumbnail %}
+{% extends "include/base.html" %}
 {% block content %}
-    {% for per in units.get_persons %}
-        1 {{ per }}
-    {% endfor %}
+      <h4>{{ units.parent }} -> {{ units.unit_name }} - #{{ units.unit_cypher}}</h4>
+        {% for person in units.get_person_in_unit %}
+            <p><a href="{{ person.get_absolute_url }}">{{ person }}</a></p><p>{{ person.email }}</p>
+        {% endfor %}
 {% endblock %}

@@ -30,10 +30,10 @@
                 {% endif %}
                 {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
               </div>
-                  <div class="col l8 hide-on-med-and-down" style="font-size: 0.8rem">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</div>
-                  <div class="col l1 m4 right">
+                  <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</div>
+                  <div class="col l2 m4 right" style="font-size: 0.8rem">
                       {% if person.phone %}
-                         тел. {{ person.phone.first }}
+                         <span>{{ person.phone.first }} <i class="material-icons right tooltipped" data-tooltip="Не из сети МИТХТ необходимо набрать +7(495)246-05-55 и внутр. номер">help</i></span>
                       {% endif %}
                   </div>
               </div>
@@ -41,7 +41,7 @@
                 <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
                     <div class="col l3"><i class="material-icons left">phone</i>{{ person.get_phones }}</div>
                     <div class="col l3"><i class="material-icons left">mail</i>{{ person.email }}</div>
-                    <div class="col l3"><i class="material-icons left">place</i>{{ person.address }}</div>
+                    <div class="col l3"><i class="material-icons left">place</i>{{ person.get_addresses }}</div>
                     <div class="col l3">
                         <a class="btn-flat red-text text-lighten-2" href="{{ person.get_absolute_url }}"><i class="material-icons right">more_vert</i>Подробнее</a><br/>
                         <a class="btn-flat red-text text-lighten-2" href="mailto:{{ person.email }}"><i class="material-icons right">send</i>Письмо</a>

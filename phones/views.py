@@ -5,20 +5,19 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.db.models import Q
 from haystack.query import SearchQuerySet
-
-
+from haystack.generic_views import SearchView
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
     model = Person
     context_object_name = 'list'
-    paginate_by = 10
+    paginate_by = 15
 
     def get_context_data(self, **kwargs):
         context = super(ListPhones, self).get_context_data(**kwargs)
         return context
 
-class ListUnits(ListView):
+class ListUnits(DetailView):
     template_name = 'phones/units.html'
     model = Unit
     context_object_name = 'units'
@@ -63,3 +62,9 @@ class UpdatePhone(UpdateView):
 def search_people(request):
     people = SearchQuerySet().autocomplete(content_auto=request.POST.get('search_text', ''))
     return render_to_response('search/ajax_search.html', {'people': people})
+
+
+class UnitSearchView(SearchView):
+    template_name = 'search/unit.html'
+    queryset = SearchQuerySet().all()
+    context_object_name = 'results'

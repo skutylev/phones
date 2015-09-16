@@ -1,0 +1,12 @@
+{% extends "include/base.html" %}
+{% block content %}
+{% if query %}
+    {% for result in page.object_list %}
+        <div>test</div>
+        {{ result.object }}
+        {{ result.object.unit_name }}{{ result.object.unit_cypher }}
+    {% empty %}
+        <p>Не найдено.</p>
+    {% endfor %}
+{% endif %}
+{% endblock %}

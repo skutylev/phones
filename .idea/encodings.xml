@@ -9,7 +9,6 @@
     <file url="file://$PROJECT_DIR$/phones/templates/phones/detail.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/phones/templates/phones/phones.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/phones/templates/search/search.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/phones/url.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/phones/views.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/phones_mitht/settings.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/phones_mitht/urls.py" charset="UTF-8" />

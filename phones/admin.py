@@ -11,7 +11,7 @@ admin.site.register(Organization, OrganizationAdmin)
 class UnitAdmin(MPTTModelAdmin):
     mptt_level_indent = 20
     mptt_indent_field = "unit_name"
-    list_display = ('unit_name', 'unit_cypher', )
+    list_display = ('unit_name', 'unit_short_name', 'unit_cypher', )
 admin.site.register(Unit, UnitAdmin)
 
 class PositionAdmin(admin.ModelAdmin):
@@ -64,7 +64,8 @@ class PhoneForm(ModelForm):
 
 class PhoneAdmin(admin.ModelAdmin):
     form = PhoneForm
-    list_display = ("country_code", "area_code", "prefix", "number", )
+    list_display = ("country_code", "area_code", "prefix", "number", "is_outer",)
+    list_editable = ("is_outer",)
 admin.site.register(Phone, PhoneAdmin)
 
 class AddressAdmin(admin.ModelAdmin):

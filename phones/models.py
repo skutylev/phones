@@ -6,6 +6,7 @@ import mptt
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 from phones.slugify import slugify
+from django.db.models import Q
 from sorl.thumbnail import ImageField
 from django_select2 import Select2ChoiceField
 
@@ -143,9 +144,13 @@ class Phone(models.Model):
     area_code = models.ForeignKey(AreaCode)
     prefix = models.ForeignKey(Prefix)
     number = models.CharField(max_length=6, verbose_name='Номер телефона')
+    is_outer = models.BooleanField(default=False, verbose_name='Внешний')
 
     def __str__(self):
-        return self.number
+        if self.is_outer is False:
+            return u'внутр. %s' % (self.number,)
+        else:
+            return u'%s(%s)%s%s' % (self.country_code, self.area_code, self.prefix, self.number)
 
     class Meta:
         verbose_name = 'Телефон'
@@ -238,6 +243,7 @@ class Organization(models.Model):
 class Unit(MPTTModel, models.Model):
     unit_cypher = models.CharField(max_length=15, verbose_name='Шифр', blank=True)
     unit_name = models.CharField(max_length=200, verbose_name='Подразделение')
+    unit_short_name = models.CharField(max_length=255, verbose_name='Сокращение', blank=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', verbose_name='Родитель', db_index=True, )
     slug = models.SlugField(max_length=255, verbose_name='Ссылка', blank=True)
 
@@ -259,12 +265,12 @@ class Unit(MPTTModel, models.Model):
     def get_absolute_url(self):
         return "/units/%s/" % self.slug
 
+    def get_person_in_unit(self):
+        return Person.objects.filter(Q(unit=self.id))
+        #return Person.objects.select_related('unit').get(unit=self.id)
+
     def __str__(self):
         return self.unit_name
-
-    def get_person(self):
-        persons = Person.objects.all
-        return persons
 
 mptt.register(Unit,)
 
@@ -307,6 +313,9 @@ class Person(models.Model):
 
     def get_phones(self):
         return ',\n'.join([str(p) for p in self.phone.all()])
+
+    def get_addresses(self):
+        return ',\n'.join([str(p) for p in self.address.all()])
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.first_name[:1] + self.middle_name[:1] + self.last_name)

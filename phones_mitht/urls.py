@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 from phones.views import ListPhones, DetailPhone, CreatePhone, UpdatePhone, ListUnits
+from phones.views import UnitSearchView
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -10,8 +11,9 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('allauth.urls')),
     url(r'^pubs/', include('pubs.urls'), name='pubs'),
     url(r'^$', ListPhones.as_view(), name='list'),
-    url(r'^units', ListUnits.as_view(), name='units'),
+    url(r'^units/(?P<slug>[-\w]+)/$', ListUnits.as_view(), name='units'),
     url(r'^search/$', include('haystack.urls')),
+    url(r'^search/units/$', UnitSearchView.as_view(), name='haystack_search'),
     url(r'^add/$', CreatePhone.as_view(template_name='phones/add.html'), name='add'),
     url(r'^update$', UpdatePhone.as_view(template_name='phones/update.html'), name='update'),
     url(r'^(?P<slug>[-\w]+)/$', DetailPhone.as_view(), name='detail'),
