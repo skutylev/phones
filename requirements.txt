@@ -25,4 +25,6 @@ django-endless-pagination
 celery
 celery-haystack
 django-celery
+django-import-export
 django-debug-toolbar
+django-easy-select2

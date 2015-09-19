@@ -39,7 +39,8 @@
                             <form id="search" method="get" action="/search/?=">
                                 {% csrf_token %}
                                 <div class="input-field">
-                                    <input class="light-blue darken-2" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+                                    <input style="margin-bottom: 0;" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+                                    <label for="id_q"><i class="material-icons">search</i></label>
                                 </div>
                             </form>
                         </li>

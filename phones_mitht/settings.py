@@ -60,6 +60,8 @@ INSTALLED_APPS = (
     'fixture_magic',
     'debug_toolbar.apps.DebugToolbarConfig',
     'django_select2',
+    'import_export',
+    'easy_select2',
 )
 
 MIDDLEWARE_CLASSES = (
