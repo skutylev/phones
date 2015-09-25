@@ -4,7 +4,6 @@ unidecode
 django-allauth
 django-ckeditor
 django-formset-js
-django-grappelli
 django-haystack
 django-jquery-js
 django-mptt
@@ -27,4 +26,5 @@ celery-haystack
 django-celery
 django-import-export
 django-debug-toolbar
-django-easy-select2
+django-braces
+

@@ -18,7 +18,7 @@ SITE_ID = 1
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _PATH = os.path.abspath(os.path.dirname(__file__))
 
-INTERNAL_IPS = ( '93.180.6.13', )
+#INTERNAL_IPS = ( '93.180.6.13', )
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -28,7 +28,7 @@ SECRET_KEY = '4%u+lvugiuaoy7_p&$l#r8asi)5jp@di&$&h0%=g70t6kyv1%9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = True
 
 ALLOWED_HOSTS = ['webhost3', 'kutylev.mitht.net']
 
@@ -84,8 +84,11 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             normpath(join(BASE_DIR, 'phones/templates')),
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'phones',  'templates'),
         ],
         'APP_DIRS': True,
+
         'OPTIONS': {
             'context_processors': [
                 "django.contrib.auth.context_processors.auth",
@@ -109,24 +112,24 @@ WSGI_APPLICATION = 'phones_mitht.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-if socket.gethostname() == 'webhost3':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'phonebook',
-            'USER': 'phone',
-            'PASSWORD': 'ReNsKtDcThUtQ1988',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
+# if socket.gethostname() == 'webhost3':
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'phonebook',
+#             'USER': 'phone',
+#             'PASSWORD': 'ReNsKtDcThUtQ1988',
+#             'HOST': 'localhost',
+#             'PORT': '',
+#         }
+#     }
+# else:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -139,22 +142,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-
-
 STATIC_URL = '/static/'
 STATIC_ROOT = normpath(join(BASE_DIR, 'static', 'collected'))
-
 STATICFILES_DIRS = (
     normpath(join(BASE_DIR, 'static')),
 )
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'phones',  'images')
 MEDIA_URL = '/media/'
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-    os.path.join(BASE_DIR, 'phones',  'templates'),
-)
+
 
 CKEDITOR_UPLOAD_PATH = (
     os.path.join(BASE_DIR,  'uploads'),
@@ -192,10 +188,10 @@ SUIT_CONFIG = {
         'auth': 'icon-lock',
     },
 
-   # 'MENU_EXCLUDE': ('socialaccount','sites'),
-   # 'MENU': (
-   #      {'app': 'phones', 'label':'Телефоны','models': ('person', '-', 'unit', 'position', 'degree', 'sciencerank', 'workhours', '-', 'address', 'city', 'street', 'building', 'campus', 'office', 'areacode', 'postcode', 'prefix', 'phone',)},
-   # ),
+   'MENU_EXCLUDE': ('admin','socialaccount','sites'),
+   'MENU': (
+        {'app': 'phones', 'label':'Телефоны','models': ('person', 'unit', 'position', 'address', 'edu')},
+   ),
 
     # misc
     # 'LIST_PER_PAGE': 15
@@ -207,8 +203,13 @@ FONTAWESOME_PREFIX = 'fa'
 
 SOCIALACCOUNT_PROVIDERS = \
     {'google':
-        {'SCOPE': ['profile', 'email'],
-          'AUTH_PARAMS': {'access_type': 'online'}}}
+        {
+            'SCOPE': ['profile', 'email', ],
+            'AUTH_PARAMS': {'access_type': 'online', }
+        }
+    }
+
+ACCOUNT_ADAPTER = 'phones.adapter.MyAccountAdapter'
 
 THUMBNAIL_PREFIX = 'images/cache/'
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'

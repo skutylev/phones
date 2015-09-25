@@ -166,12 +166,13 @@ class Address(models.Model):
     office = models.ForeignKey(Office)
 
     def __str__(self):
-          return u'%s д. %s, %s-%s' % (self.street, self.building, self.campus, self.office)
+        return u'%s д. %s, %s-%s' % (self.street, self.building, self.campus, self.office)
 
     class Meta:
         verbose_name = 'Адрес'
         verbose_name_plural = 'Адреса'
-        ordering = ['street']
+        ordering = ['street', 'building', 'campus', 'office']
+
 
 class Degree(models.Model):
     degree = models.CharField(max_length=50, verbose_name='Ученая степень')
@@ -216,7 +217,7 @@ class Organization(models.Model):
 
 class Unit(MPTTModel, models.Model):
     unit_cypher = models.CharField(max_length=15, verbose_name='Шифр', blank=True)
-    unit_name = models.CharField(max_length=200, verbose_name='Подразделение')
+    unit_name = models.CharField(max_length=200, verbose_name='Подразделение', blank=True)
     unit_short_name = models.CharField(max_length=255, verbose_name='Сокращение', blank=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', verbose_name='Родитель', db_index=True, )
     slug = models.SlugField(max_length=255, verbose_name='Ссылка', blank=True)
@@ -262,22 +263,22 @@ class Position(models.Model):
 
 
 class PositionInUnit(models.Model):
-    person = models.ForeignKey('Person',)
+    person = models.ForeignKey('Person', verbose_name='Пользователь', blank=True, null=True, )
     unit = models.ForeignKey(Unit, verbose_name='Подразделение', blank=True)
     position = models.ForeignKey(Position, verbose_name='Должность', blank=True)
-    phone = models.ForeignKey(Phone, verbose_name='Телефон', blank=True)
-    address = models.ForeignKey(Address, verbose_name='Адрес', blank=True)
-    chief = models.ForeignKey('Person', verbose_name='Руководитель', blank=True, null=True, related_name='subordinates')
-    is_main = models.BooleanField(default=False, verbose_name='Основное место работы')
+    phone = models.ManyToManyField(Phone, verbose_name='Телефон', blank=True)
+    address = models.ForeignKey(Address, verbose_name='Адрес', blank=True, default='10')
+    chief = models.ForeignKey('Person', verbose_name='Руководитель', blank=True,  related_name='subordinates')
+    is_main = models.BooleanField(default=False, verbose_name='Основное место работы', blank=True,)
     order = models.PositiveIntegerField()
 
     class Meta:
-        verbose_name = ' '
+        verbose_name = 'Должность в подразделении'
+        verbose_name_plural = 'Должности в подразделениях'
         ordering = ['order']
 
     def __str__(self):
         return u'%s / %s' % (self.position, self.unit)
-
 
 class Person(models.Model):
     user = models.OneToOneField(User, verbose_name='Пользователь', blank=True, null=True, )
@@ -288,25 +289,23 @@ class Person(models.Model):
     email = models.EmailField(verbose_name='Email', blank=True)
     photo = models.ImageField(upload_to=get_person_image_path, verbose_name='Фотография', blank=True, default=None)
     slug = models.SlugField(max_length=30, verbose_name='Ссылка', blank=True)
-    unit = models.ManyToManyField(Unit, verbose_name='Подразделение', related_name='units')
-    position = models.ManyToManyField(Position, verbose_name='Должность', related_name='positions', blank=True)
     degree = models.ForeignKey(Degree, verbose_name='Ученая степень', default='3', related_name='degrees')
     science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание', default='3', related_name='science_ranks')
-    address = models.ManyToManyField(Address, verbose_name='Адрес', related_name='address', blank=True)
-    phone = models.ManyToManyField(Phone, verbose_name='Телефон', related_name='phone', blank=True)
-    work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы', related_name='work_hours')
+    work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы', related_name='work_hours', blank=True, default='6')
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
-    #chief = models.ForeignKey('self', verbose_name='Руководитель', blank=True, null=True, related_name='subordinates')
+
+    def get_addresses(self):
+        #address = PositionInUnit.objects.select_related("address__street").filter(person=self.id).values('address__street').distinct()
+        address = Person.objects.select_related('positioninunit__address').filter(positioninunit__person=self.id).values('positioninunit__address').distinct()
+
+        return address
 
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
 
     def get_phones(self):
         return ',\n'.join([str(p) for p in self.phone.all()])
-
-    def get_addresses(self):
-        return ',\n'.join([str(p) for p in self.address.all()])
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.first_name[:1] + self.middle_name[:1] + self.last_name)
@@ -315,6 +314,8 @@ class Person(models.Model):
     def get_absolute_url(self):
         return "/%s/" % self.slug
 
+    def person_in_unit(self):
+        return self.positioninunit_set.select_related('unit')
     # def get_subordinates(self):
     #     subordinates = Person.objects.filter(chief_id=self.id)
     #     return subordinates

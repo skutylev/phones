@@ -6,58 +6,61 @@
             <li>
                 <div class="collapsible-header"><span>Часто используемые телефоны: <i class="material-icons right">expand_more</i></span> </div>
                 <div class="collapsible-body">
-                    <p>Приемная ректора - тел. +7 (499) 600-82-06</p>
-                    <p>Канцелярия - тел. +7 (499) 600-88-25</p>
-                    <p>Приемная комиссия - тел. +7 (499) 600-82-49</p>
-                    <p>Директор по экономике - тел. +7 (499) 600-82-18</p>
-                    <p>Проректор по уч. работе - тел. +7 (499) 600-82-11</p>
-                    <p>Проректор по НИД - тел. +7 (499) 600-82-02</p>
+                    <p>Приемная ректора +7 (499) 600-82-06</p>
+                    <p>Канцелярия +7 (499) 600-88-25</p>
+                    <p>Приемная комиссия +7 (499) 600-82-49</p>
+                    <p>Директор по экономике +7 (499) 600-82-18</p>
+                    <p>Проректор по уч. работе +7 (499) 600-82-11</p>
+                    <p>Проректор по НИД +7 (499) 600-82-02</p>
+                    <p>Диспетчер МИТХТ Ю-З +7 (499) 600-87-65</p>
                 </div>
             </li>
         </ul>
         <h4>Последние добавленные</h4>
         <ul class="collapsible" data-collapsible="accordion">
-         <div class="fixed-action-btn" style="bottom: 70px; right: 50px; cursor: help;">
-             <i class="material-icons red-text text-lighten-4 right tooltipped" style="font-size: 50px;" data-tooltip="Не из сети МИТХТ необходимо набрать +7(495)246-05-55 и внутренний номер">help</i>
-         </div>
+
         {% for person in list %}
             <li>
+
               <div class="collapsible-header valign-wrapper">
-              <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
-                {% if person.photo %}
-                    {% thumbnail person.photo "27x27" quality=99 crop="center" as im %}
-                    <img class="circle responsive-img" style="margin-left: 2px; margin-right: 15px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ person.last_name }}">
-                    {% endthumbnail %}
-                {% else %}
-                    <i class="material-icons">person</i>
-                {% endif %}
-                {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
-              </div>
-                  <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem"><span class="truncate">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</span></div>
+                  <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
+                    {% if person.photo %}
+                        {% thumbnail person.photo "27x27" quality=99 crop="center" as im %}
+                        <img class="circle responsive-img" style="margin-left: 2px; margin-right: 15px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ person.last_name }}">
+                        {% endthumbnail %}
+                    {% else %}
+                        <i class="material-icons">person</i>
+                    {% endif %}
+                    {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
+                  </div>
+                  <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem">
+                      <span class="truncate">{% for info in person.positioninunit_set.select_related.all %}{{ info.unit }} / {{ info.position }}{% endfor %}</span>
+                  </div>
                   <div class="col l2 m4 right" style="font-size: 0.8rem">
-                      {% if person.phone %}
-                         <span>{{ person.phone.first }}</span>
-                      {% endif %}
+                    <span>{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</span>
                   </div>
               </div>
+
               <div class="collapsible-body">
                 <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
-                    <div class="col l3"><i class="material-icons left">phone</i>{{ person.get_phones }}</div>
+                    <div class="col l3"><i class="material-icons left">phone</i>{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</div>
                     <div class="col l3"><i class="material-icons left">mail</i>{{ person.email }}</div>
-                    <div class="col l4"><i class="material-icons left">place</i>{{ person.get_addresses }}</div>
+                    <div class="col l4"><i class="material-icons left">place</i>{% for info in person.positioninunit_set.all %}{{ info.address }}{% endfor %}</div>
                     <div class="col l2">
                         <a class="btn-flat red-text text-lighten-2" href="{{ person.get_absolute_url }}">Подробнее</a><br/>
                         <a class="btn-flat red-text text-lighten-2" href="mailto:{{ person.email }}">Письмо</a>
                     </div>
                 </div>
               </div>
+
             </li>
         {% endfor %}
-        </ul>
-
+           </ul>
+         <div class="fixed-action-btn" style="bottom: 70px; right: 50px; cursor: help;">
+             <i class="material-icons red-text text-lighten-4 right tooltipped" style="font-size: 50px;" data-tooltip="Не из сети МИТХТ необходимо набрать +7(495)246-05-55 и внутренний номер">help</i>
+         </div>
         {% include "include/pagination.html" %}
     </div>
     </div>
     </div>
-
 {% endblock %}

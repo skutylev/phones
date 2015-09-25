@@ -3,7 +3,9 @@
     <div class="row">
         <div class="col s10 offset-m1 m8 offset-l1 l8">
             <h1>{{ detail.last_name }} {{ detail.first_name }} {{ detail.middle_name }}</h1>
-            <p>{{ detail.position.first }}: <a href="{{ detail.unit.first.get_absolute_url }}">{{ detail.unit.first }}</a></p>
+            <p>{% for info in detail.positioninunit_set.all %}
+                {{ info.position }}: <a href="{{ info.unit.get_absolute_url }}">{{ info.unit }}</a><br />
+             {% endfor %}</p>
         </div>
         <div class="col s2">
             {% thumbnail detail.photo "150x150" crop="center" as im %}
@@ -47,17 +49,21 @@
             </div>
         </div>
         <div class="col l3">
-            <h5>Контакты</h5>
-            <p>Телефон:<br />{% for phone in detail.phone.all %}{{ phone }}, {% endfor %}</p>
-            <p>E-mail:<br /><a target="_blank" href="mailto:{{ detail.email }}">{{ detail.email }}</a></p>
-            <p>Адрес:<br />{{ detail.address }}</p>
-            <p>Часы работы:<br />{{ detail.work_hours }}</p>
-            {% if detail.chief == None %}
-            <p></p>
-            {% else %}
-            <p>Руководитель:<br /><a href="{{ detail.chief.get_absolute_url }}">{{ detail.chief }}</a><br/></p>
-            {% endif %}
 
+            <h5>Контакты</h5>
+            <p>Телефон:<br />{% for info in detail.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br /> {% endfor %}{% endfor %}</p>
+            <p>E-mail:<br /><a target="_blank" href="mailto:{{ detail.email }}">{{ detail.email }}</a></p>
+            <p>Адрес:<br />{% for info in detail.get_addresses %}{{ info }}<br />{% endfor %} {{ detail.get_addresses }}</p>
+            <p>Часы работы:<br />{{ detail.work_hours }}</p>
+            <p>Руководитель:<br/>
+            {% for info in detail.positioninunit_set.all %}
+                {% if info.chief == None %}
+                    <br />
+                {% else %}
+                    <a href="{{ info.chief.get_absolute_url }}">{{ info.chief }}</a><br/>
+                {% endif %}
+            {% endfor %}
+            </p>
             <a class='dropdown-button blue btn' href='#' data-activates='dropdown1'>Подчиненные</a>
             <ul id='dropdown1' class='dropdown-content'>
 {#                {% for sub in detail.get_subordinates %}#}
@@ -67,5 +73,6 @@
             </ul>
         </div>
     </div>
+
 {% endblock %}
 

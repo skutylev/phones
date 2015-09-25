@@ -1,15 +1,14 @@
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCode, City, Street, Building, Campus, Office, WorkHours, Phone, Address, Person, Degree, ScienceRank, Edu, PositionInUnit
 from django.forms import ModelForm
 from suit.widgets import EnclosedInput
 from suit.admin import SortableStackedInline
 from mptt.admin import MPTTModelAdmin
 from import_export import resources
+from django_select2 import AutoModelSelect2Field, AutoHeavySelect2Widget
 from import_export.admin import ImportExportMixin
-from easy_select2 import select2_modelform
-
-PersonForm = select2_modelform(Person, attrs={'width': '200px'})
-PositionInUnitForm = select2_modelform(PositionInUnit, attrs={'width': '200px'})
+import logging
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -112,28 +111,6 @@ class ScienceRankAdmin(admin.ModelAdmin):
 admin.site.register(ScienceRank, ScienceRankAdmin)
 
 
-class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
-    model = PositionInUnit
-    extra = 1
-    max_num = 3
-    verbose_name_plural = 'Должности'
-    fk_name = 'person'
-    suit_classes = 'suit-tab suit-tab-positioninunit'
-
-
-class PositionInUnitResource(resources.ModelResource):
-
-    class Meta:
-        model = PositionInUnit
-
-
-class PositionInUnitAdmin(admin.ModelAdmin):
-    search_fields = ("unit",)
-    form = PositionInUnitForm
-
-admin.site.register(PositionInUnit, PositionInUnitAdmin)
-
-
 class EduInline(SortableStackedInline, admin.TabularInline):
     model = Edu
     extra = 1
@@ -145,6 +122,84 @@ class EduAdmin(admin.ModelAdmin):
     list_display = ('level',)
 admin.site.register(Edu, EduAdmin)
 
+###################################
+# django-select2 to model person  #
+###################################
+
+
+class PersonChoices(AutoModelSelect2Field):
+    queryset = Person.objects
+    search_fields = ['last_name__icontains', ]
+
+
+class PositionChoices(AutoModelSelect2Field):
+    queryset = Position.objects
+    search_fields = ['position__icontains', ]
+
+
+class UnitChoices(AutoModelSelect2Field):
+    queryset = Unit.objects
+    search_fields = ['unit_name__icontains', ]
+
+
+# class AddressChoices(AutoModelSelect2Field):
+#     queryset = Address.objects
+#     search_fields = ['street', 'building', 'campus', 'office']
+
+class PositionInUnitForm(ModelForm):
+    position_verbose_name = Position._meta.verbose_name
+    unit_verbose_name = Unit._meta.verbose_name
+    person_verbose_name = Person._meta.verbose_name
+    chief_verbose_name = PositionInUnit._meta.get_field('chief').verbose_name.title()
+    address_verbose_name = Address._meta.verbose_name
+
+    position = PositionChoices(
+        label=position_verbose_name.capitalize(),
+        requried=False,
+        widget=AutoHeavySelect2Widget(
+            select2_options={
+                'width': '220px',
+                'placeholder': 'Выберите %s ...' % position_verbose_name
+            }
+        )
+    )
+    unit = UnitChoices(
+        label=unit_verbose_name.capitalize(),
+        required=False,
+        widget=AutoHeavySelect2Widget(
+            select2_options={
+                'width': '220px',
+                'placeholder': 'Выберите %s ...' % unit_verbose_name
+            }
+        )
+    )
+
+    chief = PersonChoices(
+        label=chief_verbose_name.capitalize(),
+        required=False,
+        widget=AutoHeavySelect2Widget(
+            select2_options={
+                'width': '220px',
+                'placeholder': 'Выберите %s ...' % chief_verbose_name
+            }
+        )
+    )
+
+    # address = AddressChoices(
+    #     label=address_verbose_name.capitalize(),
+    #     required=False,
+    #     widget=AutoHeavySelect2Widget(
+    #         select2_options={
+    #             'width': '220px',
+    #             'placeholder': 'Выберите %s ...' % address_verbose_name
+    #         }
+    #     )
+    # )
+
+    class Meta:
+        model = PositionInUnit
+        fields = ['person', 'is_main', 'unit', 'position', 'phone', 'address', 'chief', ]
+
 
 class PersonResource(resources.ModelResource):
 
@@ -152,20 +207,35 @@ class PersonResource(resources.ModelResource):
         model = Person
 
 
+class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
+    model = PositionInUnit
+    extra = 1
+    max_num = 3
+    verbose_name_plural = 'Должности'
+    fk_name = 'person'
+    suit_classes = 'suit-tab suit-tab-positioninunit'
+    form = PositionInUnitForm
+    filter_horizontal = ("phone", )
+
+class PositionInUnitAdmin(admin.ModelAdmin):
+    form = PositionInUnitForm
+    filter_horizontal = ("phone", )
+admin.site.register(PositionInUnit, PositionInUnitAdmin)
+
+
 class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ("last_name", "first_name", "middle_name", "email", "get_phones", "publish_date", "publish" )
+    list_display = ("last_name", "first_name", "middle_name", "email", "publish_date", "publish", )
     list_editable = ("publish",)
-    list_filter = ("unit",)
-    filter_horizontal = ("unit", "position", "phone", "address", )
+    # list_filter = ("unit",)
+    # filter_horizontal = ("unit", "position", "phone", "address",)
     search_fields = ("last_name",)
     resource_class = PersonResource
-    form = PersonForm
     inlines = (EduInline, PositionInUnitInline)
 
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-general',),
-            'fields': ['publish', 'last_name', 'first_name', 'middle_name', 'birthday', 'email', 'photo']
+            'fields': ['user', 'publish', 'last_name', 'first_name', 'middle_name', 'birthday', 'email', 'photo']
         }),
         ('Звания/степени', {
             'classes': ('suit-tab', 'suit-tab-general',),
@@ -175,8 +245,12 @@ class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
             'classes': ('suit-tab', 'suit-tab-positioninunit',),
             'fields': ['work_hours',]
         }),
+
     ]
 
-    suit_form_tabs = (('general', 'Основное'), ('positioninunit', 'Подразделение/Должность'), ('edu', 'Образование'),)
+    suit_form_tabs = (('general', 'Основное'), ('positioninunit', 'Подразделение/Должность'), ('edu', 'Образование'), ('old','Должности/подразделения(старое)'),)
 
 admin.site.register(Person, PersonAdmin)
+########################################
+#  end django-select2 to model person  #
+########################################

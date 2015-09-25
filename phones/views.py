@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, UpdateView
 from phones.models import Person, Unit
 from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response
@@ -6,6 +6,7 @@ from django.template.context import RequestContext
 from django.db.models import Q
 from haystack.query import SearchQuerySet
 from haystack.generic_views import SearchView
+from braces.views import LoginRequiredMixin
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
@@ -37,18 +38,23 @@ class DetailPhone(DetailView):
         return context
 
 
-class CreatePhone(CreateView):
+class UpdatePhone(LoginRequiredMixin, UpdateView):
     model = Person
     fields = ['first_name', 'last_name', 'middle_name', 'birthday',
-              'email', 'photo', 'unit', 'position', 'degree', 'science_rank',
+              'photo', 'unit', 'position', 'degree', 'science_rank',
               'address', 'phone', 'work_hours']
+    redirect_unauthenticated_users = True
 
+    def get(self, request, **kwargs):
+        self.object = Person.objects.get(slug=self.kwargs['slug'])
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        context = self.get_context_data(object=self.object, form=form)
+        return self.render_to_response(context)
 
-class UpdatePhone(UpdateView):
-    model = Person
-    fields = ['first_name', 'last_name', 'middle_name', 'birthday',
-              'email', 'photo', 'unit', 'position', 'degree', 'science_rank',
-              'address', 'phone', 'work_hours']
+    def get_object(self, queryset=None):
+        obj = Person.objects.get(slug=self.kwargs['slug'])
+        return obj
 
 
 # def search_person(request):
