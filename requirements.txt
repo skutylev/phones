@@ -27,4 +27,4 @@ django-celery
 django-import-export
 django-debug-toolbar
 django-braces
-
+django-extensions

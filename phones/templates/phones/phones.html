@@ -1,4 +1,4 @@
-{% extends "include/base.html" %}{% load fontawesome %} {% load thumbnail %}
+{% extends "include/base.html" %}{% load thumbnail %}
 {% block content %}
     <div class="row">
         <div class="col s12 offset-m1 m10 offset-l1 l10">
@@ -34,10 +34,10 @@
                     {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
                   </div>
                   <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem">
-                      <span class="truncate">{% for info in person.positioninunit_set.select_related.all %}{{ info.unit }} / {{ info.position }}{% endfor %}</span>
+                      <span class="truncate">{{ person.positioninunit_set.select_related.first.unit }} / {{ person.positioninunit_set.select_related.first.position }}</span>
                   </div>
                   <div class="col l2 m4 right" style="font-size: 0.8rem">
-                    <span>{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</span>
+                    <span>{% for phone in person.positioninunit_set.select_related.first.phone.all %}{{ phone }} {% endfor %}</span>
                   </div>
               </div>
 

@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, UpdateView
-from phones.models import Person, Unit
+from phones.models import Person, Unit, PositionInUnit
 from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
@@ -7,6 +7,7 @@ from django.db.models import Q
 from haystack.query import SearchQuerySet
 from haystack.generic_views import SearchView
 from braces.views import LoginRequiredMixin
+
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
@@ -18,6 +19,10 @@ class ListPhones(ListView):
         context = super(ListPhones, self).get_context_data(**kwargs)
         return context
 
+    # def get_queryset(self):
+    #     queryset = Person.objects.select_related().filter(publish=True, positioninunit__is_main=True).values()
+    #     return queryset
+
 class ListUnits(DetailView):
     template_name = 'phones/units.html'
     model = Unit
@@ -26,6 +31,7 @@ class ListUnits(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ListUnits, self).get_context_data(**kwargs)
         return context
+
 
 class DetailPhone(DetailView):
     template_name = 'phones/detail.html'
@@ -41,8 +47,7 @@ class DetailPhone(DetailView):
 class UpdatePhone(LoginRequiredMixin, UpdateView):
     model = Person
     fields = ['first_name', 'last_name', 'middle_name', 'birthday',
-              'photo', 'unit', 'position', 'degree', 'science_rank',
-              'address', 'phone', 'work_hours']
+              'photo',  'degree', 'science_rank', 'work_hours']
     redirect_unauthenticated_users = True
 
     def get(self, request, **kwargs):

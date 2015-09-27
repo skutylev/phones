@@ -9,7 +9,7 @@ from phones.slugify import slugify
 from django.db.models import Q
 from sorl.thumbnail import ImageField
 from django_select2 import Select2ChoiceField
-
+from django_extensions.db.models import ModificationDateTimeField
 
 ############################
 # Автоматическая генерация #
@@ -293,6 +293,7 @@ class Person(models.Model):
     science_rank = models.ForeignKey(ScienceRank, verbose_name='Ученое звание', default='3', related_name='science_ranks')
     work_hours = models.ForeignKey(WorkHours, verbose_name='Часы работы', related_name='work_hours', blank=True, default='6')
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
+    # modified_date = models.DateTimeField(auto_now=True)
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
 
     def get_addresses(self):
@@ -314,8 +315,6 @@ class Person(models.Model):
     def get_absolute_url(self):
         return "/%s/" % self.slug
 
-    def person_in_unit(self):
-        return self.positioninunit_set.select_related('unit')
     # def get_subordinates(self):
     #     subordinates = Person.objects.filter(chief_id=self.id)
     #     return subordinates

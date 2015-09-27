@@ -248,7 +248,7 @@ class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
 
     ]
 
-    suit_form_tabs = (('general', 'Основное'), ('positioninunit', 'Подразделение/Должность'), ('edu', 'Образование'), ('old','Должности/подразделения(старое)'),)
+    suit_form_tabs = (('general', 'Основное'), ('positioninunit', 'Подразделение/Должность'), ('edu', 'Образование'), )
 
 admin.site.register(Person, PersonAdmin)
 ########################################
