@@ -220,6 +220,7 @@ class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
 class PositionInUnitAdmin(admin.ModelAdmin):
     form = PositionInUnitForm
     filter_horizontal = ("phone", )
+    search_fields = ("phone",)
 admin.site.register(PositionInUnit, PositionInUnitAdmin)
 
 
@@ -228,7 +229,7 @@ class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ("publish",)
     # list_filter = ("unit",)
     # filter_horizontal = ("unit", "position", "phone", "address",)
-    search_fields = ("last_name",)
+    search_fields = ("last_name", "positioninunit__phones")
     resource_class = PersonResource
     inlines = (EduInline, PositionInUnitInline)
 

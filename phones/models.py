@@ -266,7 +266,7 @@ class PositionInUnit(models.Model):
     person = models.ForeignKey('Person', verbose_name='Пользователь', blank=True, null=True, )
     unit = models.ForeignKey(Unit, verbose_name='Подразделение', blank=True)
     position = models.ForeignKey(Position, verbose_name='Должность', blank=True)
-    phone = models.ManyToManyField(Phone, verbose_name='Телефон', blank=True)
+    phone = models.ManyToManyField(Phone, verbose_name='Телефон', related_name='phones', blank=True)
     address = models.ForeignKey(Address, verbose_name='Адрес', blank=True, default='10')
     chief = models.ForeignKey('Person', verbose_name='Руководитель', blank=True,  related_name='subordinates')
     is_main = models.BooleanField(default=False, verbose_name='Основное место работы', blank=True,)
@@ -295,6 +295,7 @@ class Person(models.Model):
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
     # modified_date = models.DateTimeField(auto_now=True)
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
+
 
     def get_addresses(self):
         #address = PositionInUnit.objects.select_related("address__street").filter(person=self.id).values('address__street').distinct()
