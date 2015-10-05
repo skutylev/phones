@@ -5,7 +5,7 @@ from django.forms import ModelForm
 from suit.widgets import EnclosedInput
 from suit.admin import SortableStackedInline
 from mptt.admin import MPTTModelAdmin
-from import_export import resources
+from import_export import resources, fields
 from django_select2 import AutoModelSelect2Field, AutoHeavySelect2Widget
 from import_export.admin import ImportExportMixin
 import logging
@@ -203,9 +203,24 @@ class PositionInUnitForm(ModelForm):
 
 class PersonResource(resources.ModelResource):
 
+    phone = fields.Field(column_name='Телефон',)
+    short_name = fields.Field(column_name='Фамилия И.О.',)
+
+    def dehydrate_phone(self, person):
+        phones = PositionInUnit.objects.select_related('phone__number').filter(person=person.id).values('phone__number')
+
+        if len(phones) > 1:
+            return '%s, %s' % (phones[0]['phone__number'], phones[1]['phone__number'])
+        else:
+            return '%s' % phones[0]['phone__number']
+
+    def dehydrate_short_name(self, person):
+        return '%s %s.%s.' % (person.last_name, person.first_name[0], person.middle_name[0])
+
     class Meta:
         model = Person
-
+        fields = ('short_name', 'phone', 'email', )
+        export_order = ('short_name', 'phone', 'email',)
 
 class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
     model = PositionInUnit
@@ -229,7 +244,7 @@ class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ("publish",)
     # list_filter = ("unit",)
     # filter_horizontal = ("unit", "position", "phone", "address",)
-    search_fields = ("last_name", "positioninunit__phones")
+    search_fields = ("last_name",)
     resource_class = PersonResource
     inlines = (EduInline, PositionInUnitInline)
 

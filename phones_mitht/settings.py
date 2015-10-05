@@ -18,7 +18,7 @@ SITE_ID = 1
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _PATH = os.path.abspath(os.path.dirname(__file__))
 
-INTERNAL_IPS = ( '93.180.6.13', )
+# INTERNAL_IPS = ( '93.180.6.13', )
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/

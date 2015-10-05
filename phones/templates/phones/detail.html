@@ -2,13 +2,13 @@
 {% block content %}
     <div class="row">
         <div class="col s10 offset-m1 m8 offset-l1 l8">
-            <h1>{{ detail.last_name }} {{ detail.first_name }} {{ detail.middle_name }}</h1>
-            <p>{% for info in detail.positioninunit_set.all %}
+            <h1>{{ object.last_name }} {{ object.first_name }} {{ object.middle_name }}</h1>
+            <p>{% for info in object.positioninunit_set.all %}
                 {{ info.position }}: <a href="{{ info.unit.get_absolute_url }}">{{ info.unit }}</a><br />
              {% endfor %}</p>
         </div>
         <div class="col s2">
-            {% thumbnail detail.photo "150x150" crop="center" as im %}
+            {% thumbnail object.photo "150x150" crop="center" as im %}
                 <img style="border: 1px #ee6e73 solid;" class="circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
         </div>
@@ -30,7 +30,7 @@
                 </div>
                 <div id="edu" class="col l12">
                     <h5>Бакалавриат</h5>
-                    <p>{% for edu in detail.edu.all %}{{ edu }}{% endfor %}</p>
+                    <p>{% for edu in object.edu.all %}{{ edu }}{% endfor %}</p>
                     <h5>Магистратура</h5>
                     <p></p>
                     <h5>Аспирантура</h5>
@@ -51,12 +51,12 @@
         <div class="col l3">
 
             <h5>Контакты</h5>
-            <p>Телефон:<br />{% for info in detail.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br /> {% endfor %}{% endfor %}</p>
-            <p>E-mail:<br /><a target="_blank" href="mailto:{{ detail.email }}">{{ detail.email }}</a></p>
-            <p>Адрес:<br />{% for info in detail.get_addresses %}{{ info }}<br />{% endfor %} {{ detail.get_addresses }}</p>
-            <p>Часы работы:<br />{{ detail.work_hours }}</p>
+            <p>Телефон:<br />{% for info in object.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br /> {% endfor %}{% endfor %}</p>
+            <p>E-mail:<br /><a target="_blank" href="mailto:{{ object.email }}">{{ object.email }}</a></p>
+            <p>Адрес:<br />{% for str in street %} {{ str }}{% endfor %} {% for bld in building %}д. {{ bld }}{% endfor %}, {% for cmp in campus %} {{ cmp }}{% endfor %}-{% for off in office %}{{ off }}{% endfor %} </p>
+            <p>Часы работы:<br />{{ object.work_hours }}</p>
             <p>Руководитель:<br/>
-            {% for info in detail.positioninunit_set.all %}
+            {% for info in object.positioninunit_set.all %}
                 {% if info.chief == None %}
                     <br />
                 {% else %}
@@ -66,10 +66,11 @@
             </p>
             <a class='dropdown-button blue btn' href='#' data-activates='dropdown1'>Подчиненные</a>
             <ul id='dropdown1' class='dropdown-content'>
-{#                {% for sub in detail.get_subordinates %}#}
-                <li><a class="blue-text" href="#!">{{ sub }}</a></li>
-{#                {% empty %} <li><a href="#!">&ndash;</a></li>#}
-{#                {% endfor %}#}
+
+               {% for sub in subordinates %}
+                <li><a class="blue-text" href="/{{ sub.person__slug }}/">{{ sub.person__last_name }} {{ sub.person__first_name | slice:":1" }}.{{ sub.person__middle_name | slice:":1"}}.</a></li>
+              {% empty %} <li><a href="#!">&ndash;</a></li>
+               {% endfor %}
             </ul>
         </div>
     </div>

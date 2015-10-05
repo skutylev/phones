@@ -23,24 +23,41 @@ class ListPhones(ListView):
     #     queryset = Person.objects.select_related().filter(publish=True, positioninunit__is_main=True).values()
     #     return queryset
 
+
 class ListUnits(DetailView):
     template_name = 'phones/units.html'
     model = Unit
-    context_object_name = 'units'
 
     def get_context_data(self, **kwargs):
         context = super(ListUnits, self).get_context_data(**kwargs)
+        context['person'] = Person.objects.filter(positioninunit__unit=self.get_object())
         return context
 
 
 class DetailPhone(DetailView):
     template_name = 'phones/detail.html'
     model = Person
-    context_object_name = 'detail'
 
     def get_context_data(self, **kwargs):
         context = super(DetailPhone, self).get_context_data(**kwargs)
-        #subordinates = Person.objects.select_related('subordinates').all().get(id='')
+        # context['addresses'] = PositionInUnit.objects.select_related(
+        #     'address__street__street',
+        #     'address__building__building',
+        #     'address__campus__campus',
+        #     'address__office__office',
+        # ).filter(person=self.get_object()).values_list(
+        #     'address__street__street',
+        #     'address__building__building',
+        #     'address__campus__campus',
+        #     'address__office__office',
+        # )
+
+        context['street'] = set(PositionInUnit.objects.select_related('address__street__street').filter(person=self.get_object()).values_list('address__street__street', flat=True).distinct())
+        context['building'] = set(PositionInUnit.objects.select_related('address__building__building').filter(person=self.get_object()).values_list('address__building__building', flat=True).distinct())
+        context['campus'] = set(PositionInUnit.objects.select_related('address__campus__campus').filter(person=self.get_object()).values_list('address__campus__campus', flat=True).distinct())
+        context['office'] = set(PositionInUnit.objects.select_related('address__office__office').filter(person=self.get_object()).values_list('address__office__office', flat=True).distinct())
+        context['subordinates'] = PositionInUnit.objects.filter(chief=self.get_object()).values('person__last_name', 'person__first_name', 'person__middle_name', 'person__slug')
+
         return context
 
 
@@ -60,22 +77,3 @@ class UpdatePhone(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         obj = Person.objects.get(slug=self.kwargs['slug'])
         return obj
-
-
-# def search_person(request):
-#     if request.method == 'POST':
-#         search_text = request.POST['search_text']
-#     else:
-#         search_text = ' '
-#     person = Person.objects.filter(last_name__contains = search_text)
-#     return render_to_response('search/ajax_search.html', {'person': person})
-
-def search_people(request):
-    people = SearchQuerySet().autocomplete(content_auto=request.POST.get('search_text', ''))
-    return render_to_response('search/ajax_search.html', {'people': people})
-
-
-# class UnitSearchView(SearchView):
-#     template_name = 'search/unit.html'
-#     queryset = SearchQuerySet().all()
-#     context_object_name = 'object_list'

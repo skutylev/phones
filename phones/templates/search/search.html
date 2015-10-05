@@ -36,7 +36,7 @@
                                                         <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
                                                             <div class="col l3"><i class="material-icons left">phone</i><span>{% for info in result.object.positioninunit_set.select_related.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</span></div>
                                                             <div class="col l3"><i class="material-icons left">mail</i>{{ result.object.email }}</div>
-                                                            <div class="col l4"><i class="material-icons left">place</i>{{ result.object.get_addresses }}</div>
+                                                            <div class="col l4"><i class="material-icons left">place</i>{% for info in result.positioninunit_set.all %}{{ info.address }}{% endfor %}</div>
                                                             <div class="col l2">
                                                                 <a class="btn-flat red-text text-lighten-2" href="{{ result.object.get_absolute_url }}">Подробнее</a><br/>
                                                                 <a class="btn-flat red-text text-lighten-2" href="mailto:{{ result.object.email }}">Письмо</a>
@@ -46,6 +46,7 @@
 
                                                     </li>
                                                 {% endif %}
+
                                                 {% if result.content_type == "phones.unit" %}
                                                     <li>
                                                         <div class="collapsible-header">
@@ -62,20 +63,18 @@
                                                                         {% else %}
                                                                         <i class="material-icons">person</i>
                                                                         {% endif %}
-                                                                        {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
+                                                                        {{ result.object.last_name}} {{ result.object.first_name| slice:":1" }}.{{ result.object.middle_name| slice:":1" }}.
                                                                     </div>
-                                                                    <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem"><span class="truncate">{{ person.unit.first| slice:":25" }} / {{ person.position.first }}</span></div>
+                                                                    <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem"><span class="truncate">{{ result.unit.first| slice:":25" }} / {{ result.position.first }}</span></div>
                                                                     <div class="col l2 m4 right" style="font-size: 0.8rem">
-                                                                        {% if person.phone %}
-                                                                            <span>{{ person.phone.first }}</span>
-                                                                        {% endif %}
+                                                                        <span>{% for info in result.object.positioninunit_set.select_related.all %}{{ info.phone.first }}{% endfor %}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="collapsible-body">
                                                                     <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
-                                                                        <div class="col l3"><i class="material-icons left">phone</i>{{ person.get_phones }}</div>
-                                                                        <div class="col l3"><i class="material-icons left">mail</i>{{ person.email }}</div>
-                                                                        <div class="col l4"><i class="material-icons left">place</i>{{ person.get_addresses }}</div>
+                                                                        <div class="col l3"><i class="material-icons left">phone</i><span>{% for info in result.object.positioninunit_set.select_related.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</span></div>
+                                                                        <div class="col l3"><i class="material-icons left">mail</i>{{ result.object.email }}</div>
+                                                                        <div class="col l4"><i class="material-icons left">place</i></div>
                                                                         <div class="col l2">
                                                                             <a class="btn-flat red-text text-lighten-2" href="{{ person.get_absolute_url }}">Подробнее</a><br/>
                                                                             <a class="btn-flat red-text text-lighten-2" href="mailto:{{ person.email }}">Письмо</a>

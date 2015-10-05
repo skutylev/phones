@@ -240,9 +240,9 @@ class Unit(MPTTModel, models.Model):
     def get_absolute_url(self):
         return "/units/%s/" % self.slug
 
-    def get_person_in_unit(self):
-        return Person.objects.filter(Q(unit=self.id))
-        #return Person.objects.select_related('unit').get(unit=self.id)
+    # def get_person_in_unit(self):
+    #     return Person.objects.filter(Q(unit=self.id))
+    #     #return Person.objects.select_related('unit').get(unit=self.id)
 
     def __str__(self):
         return self.unit_name
@@ -295,13 +295,6 @@ class Person(models.Model):
     publish_date = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
     # modified_date = models.DateTimeField(auto_now=True)
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
-
-
-    def get_addresses(self):
-        #address = PositionInUnit.objects.select_related("address__street").filter(person=self.id).values('address__street').distinct()
-        address = Person.objects.select_related('positioninunit__address').filter(positioninunit__person=self.id).values('positioninunit__address').distinct()
-
-        return address
 
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
