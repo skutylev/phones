@@ -49,40 +49,11 @@
 
                                                 {% if result.content_type == "phones.unit" %}
                                                     <li>
-                                                        <div class="collapsible-header">
-                                                            <i class="material-icons">group</i><a href="{{ result.object.get_absolute_url }}">{{ result.object.unit_name }} / {{ result.object.unit_cypher }}</a> <i class="material-icons right">expand_more</i>
-                                                        </div>
-                                                        <div class="collapsible-body">
-                                                            {% for person in result.object.positioninunit_set.select_related.all %}
-                                                                <div class="collapsible-header valign-wrapper">
-                                                                    <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
-                                                                        {% if person.photo %}
-                                                                            {% thumbnail person.photo "27x27" quality=99 crop="center" as im %}
-                                                                            <img class="circle responsive-img" style="margin-left: 2px; margin-right: 15px;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ result.object.last_name }}">
-                                                                            {% endthumbnail %}
-                                                                        {% else %}
-                                                                        <i class="material-icons">person</i>
-                                                                        {% endif %}
-                                                                        {{ result.object.last_name}} {{ result.object.first_name| slice:":1" }}.{{ result.object.middle_name| slice:":1" }}.
-                                                                    </div>
-                                                                    <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem"><span class="truncate">{{ result.unit.first| slice:":25" }} / {{ result.position.first }}</span></div>
-                                                                    <div class="col l2 m4 right" style="font-size: 0.8rem">
-                                                                        <span>{% for info in result.object.positioninunit_set.select_related.all %}{{ info.phone.first }}{% endfor %}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="collapsible-body">
-                                                                    <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
-                                                                        <div class="col l3"><i class="material-icons left">phone</i><span>{% for info in result.object.positioninunit_set.select_related.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</span></div>
-                                                                        <div class="col l3"><i class="material-icons left">mail</i>{{ result.object.email }}</div>
-                                                                        <div class="col l4"><i class="material-icons left">place</i></div>
-                                                                        <div class="col l2">
-                                                                            <a class="btn-flat red-text text-lighten-2" href="{{ person.get_absolute_url }}">Подробнее</a><br/>
-                                                                            <a class="btn-flat red-text text-lighten-2" href="mailto:{{ person.email }}">Письмо</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            {% endfor %}
-                                                        </div>
+                                                        <a href="{{ result.object.get_absolute_url }}">
+                                                            <div class="collapsible-header">
+                                                                <i class="material-icons">group</i>{{ result.object.unit_name }} / {{ result.object.unit_cypher }}
+                                                            </div>
+                                                        </a>
                                                     </li>
                                                 {% endif %}
                                             {% empty %}
