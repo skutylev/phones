@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     'import_export',
     'easy_select2',
     'django_extensions',
+    'report_builder',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -161,6 +162,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+AUTH_PROFILE_MODULE = 'phones.Person'
 
 HAYSTACK_CONNECTIONS = {
     'default': {

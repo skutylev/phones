@@ -219,8 +219,8 @@ class PersonResource(resources.ModelResource):
 
     class Meta:
         model = Person
-        fields = ('short_name', 'phone', 'email', )
-        export_order = ('short_name', 'phone', 'email',)
+        fields = ('short_name', 'phone')
+        export_order = ('short_name', 'phone')
 
 class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
     model = PositionInUnit

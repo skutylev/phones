@@ -2,7 +2,7 @@ from django.conf.urls import include, url, patterns
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from phones.views import ListPhones, DetailPhone, UpdatePhone, ListUnits
+from phones.views import ListPhones, DetailPhone, UpdatePhone, ListUnits, call
 # from phones.views import UnitSearchView
 
 urlpatterns = patterns('',
@@ -18,6 +18,9 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[-\w]+)/$', DetailPhone.as_view(), name='detail'),
     url(r'^publications/', include('publications.urls')),
     url(r'^select2/', include('django_select2.urls')),
+    url(r'^report_builder/', include('report_builder.urls')),
+    url(r'^(?P<phone>\d{11})', call),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

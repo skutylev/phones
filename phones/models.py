@@ -280,8 +280,9 @@ class PositionInUnit(models.Model):
     def __str__(self):
         return u'%s / %s' % (self.position, self.unit)
 
+
 class Person(models.Model):
-    user = models.OneToOneField(User, verbose_name='Пользователь', blank=True, null=True, )
+    user = models.OneToOneField(User, verbose_name='Пользователь', related_name='profile', blank=True, null=True, )
     last_name = models.CharField(max_length=30, verbose_name='Фамилия')
     first_name = models.CharField(max_length=30, verbose_name='Имя')
     middle_name = models.CharField(max_length=30, verbose_name='Отчество')
@@ -299,8 +300,8 @@ class Person(models.Model):
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
 
-    def get_phones(self):
-        return ',\n'.join([str(p) for p in self.phone.all()])
+    def get_phone(self):
+        return ',\n'.join([str(p) for p in PositionInUnit.phone.filter(person=self.id).first()])
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.first_name[:1] + self.middle_name[:1] + self.last_name)
@@ -328,14 +329,16 @@ class Edu(models.Model):
         ('Бакалавриат', 'Бакалавриат'),
         ('Магистратура', 'Магистратура'),
         ('Аспирантура', 'Аспирантура'),
+        ('ДПО', 'ДПО'),
     )
-    person = models.ForeignKey('Person',)
+    person = models.ForeignKey('Person', verbose_name='Сотрудник')
     level = models.CharField(max_length=255, choices=EDU_CHOICES, verbose_name='Образование', blank=True)
     university = models.CharField(max_length=255, verbose_name='Университет', blank=True)
     faculty = models.CharField(max_length=255, verbose_name='Факультет', blank=True)
     department = models.CharField(max_length=255, verbose_name='Кафедра', blank=True)
     speciality = models.CharField(max_length=255, verbose_name='Специальность', blank=True)
     graduate = models.DateField(verbose_name='Дата окончания', blank=True)
+    test = models.CharField
     order = models.PositiveIntegerField()
 
     def __str__(self):

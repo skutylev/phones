@@ -28,3 +28,5 @@ django-import-export
 django-debug-toolbar
 django-braces
 django-extensions
+django-report-builder
+openpyxl

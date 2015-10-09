@@ -18,7 +18,9 @@
         </ul>
         <h4>Последние добавленные</h4>
         <ul class="collapsible" data-collapsible="accordion">
-
+{% if user.is_authenticated %}
+    {{ user.get_profile }}
+{% endif %}
         {% for person in list %}
             <li>
 

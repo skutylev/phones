@@ -7,7 +7,9 @@ from django.db.models import Q
 from haystack.query import SearchQuerySet
 from haystack.generic_views import SearchView
 from braces.views import LoginRequiredMixin
-
+from django.views.decorators.http import require_GET
+import requests
+from django.contrib.auth.models import User
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
@@ -77,3 +79,14 @@ class UpdatePhone(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         obj = Person.objects.get(slug=self.kwargs['slug'])
         return obj
+
+
+def call(request):
+    if request.method == 'get':
+        opt = dict()
+        opt['caller'] = '236'
+        opt['callee'] = request.GET.get('phone')
+        opt['login'] = 'DTF:0101571'
+        opt['password'] = '522677072'
+        # opt['caller'] = request.user.profile.get_phone()
+        return requests.post('https://webcall.datafox.ru:8008/cgi-bin/app-callback.pl', data=opt)
