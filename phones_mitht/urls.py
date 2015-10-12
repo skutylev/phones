@@ -19,7 +19,8 @@ urlpatterns = patterns('',
     url(r'^publications/', include('publications.urls')),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^report_builder/', include('report_builder.urls')),
-    url(r'^(?P<phone>\d{11})', call),
+    url(r'^call/(?P<phone>[0-9]{11}/$)', call),
+
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

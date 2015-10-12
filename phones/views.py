@@ -84,9 +84,9 @@ class UpdatePhone(LoginRequiredMixin, UpdateView):
 def call(request):
     if request.method == 'get':
         opt = dict()
-        opt['caller'] = '236'
+        opt['caller'] = '818'
         opt['callee'] = request.GET.get('phone')
         opt['login'] = 'DTF:0101571'
         opt['password'] = '522677072'
         # opt['caller'] = request.user.profile.get_phone()
-        return requests.post('https://webcall.datafox.ru:8008/cgi-bin/app-callback.pl', data=opt)
+        return requests.post('https://webcall.datafox.ru:8008/cgi-bin/app-callback.pl', caller='818', callee=request.GET.get('phone'), login='DTF:0101571', password='522677072')

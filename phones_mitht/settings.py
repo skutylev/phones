@@ -168,7 +168,7 @@ AUTH_PROFILE_MODULE = 'phones.Person'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://178.62.255.252:9266/',
+        'URL': 'http://93.180.6.22:9266/',
         'INDEX_NAME': 'haystack',
     },
 }
