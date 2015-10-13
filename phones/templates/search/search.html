@@ -50,12 +50,26 @@
                                                 {% if result.content_type == "phones.unit" %}
                                                     <li>
                                                         <a href="{{ result.object.get_absolute_url }}">
-                                                            <div class="collapsible-header">
-                                                                <i class="material-icons">group</i>{{ result.object.unit_name }} / {{ result.object.unit_cypher }}
-                                                            </div>
+                                                        <div class="collapsible-header">
+                                                            <i class="material-icons">group</i><a href="{{ result.object.get_absolute_url }}">{{ result.object.unit_name }} / {{ result.object.unit_cypher }}</a>
+                                                        </div>
                                                         </a>
                                                     </li>
                                                 {% endif %}
+
+                                                {% if result.content_type == "phones.phone" %}
+                                                    <li>
+                                                       {{ result.object.country_code}} ({{ result.object.area_code}}) {{ result.object.prefix }} * {{ result.object.number }}
+                                                            {% for person in object.person.all %}
+                                                                {{ person.last_name }} {{ person.first_name }}{{ person.middle_name }}
+                                                            {% endfor %}
+                                                        {{ result.object.person.last_name }}
+                                                        {{ person.last_name }}
+                                                        {{ result.object.prepare_person }}
+                                                        {{ result.object.positioninunit_set.select_related.person }}
+                                                    </li>
+                                                {% endif %}
+
                                             {% empty %}
                                             <p>Не найдено.</p>
                                             {% endfor %}
@@ -66,4 +80,6 @@
                 </div>
             </div>
         </div>
+
+
 {% endblock %}

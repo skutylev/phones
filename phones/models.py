@@ -148,7 +148,8 @@ class Phone(models.Model):
 
     def __str__(self):
         if self.is_outer is False:
-            return u'внутр. %s' % (self.number,)
+            # return u'внутр. %s' % (self.number,)
+            return self.number
         else:
             return u'%s (%s) %s%s' % (self.country_code, self.area_code, self.prefix, self.number)
 

@@ -33,13 +33,13 @@
                     {% else %}
                         <i class="material-icons">person</i>
                     {% endif %}
-                    {{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.
+                   <span class="truncate">{{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}.</span>
                   </div>
                   <div class="col l7 hide-on-med-and-down" style="font-size: 0.8rem">
                       <span class="truncate">{{ person.positioninunit_set.select_related.first.unit }} / {{ person.positioninunit_set.select_related.first.position }}</span>
                   </div>
                   <div class="col l2 m4 right" style="font-size: 0.8rem">
-                    <span>{% for phone in person.positioninunit_set.select_related.first.phone.all %}{{ phone }} {% endfor %}</span>
+                    <span>{% for phone in person.positioninunit_set.select_related.first.phone.all %}{{ phone }} {% if user.is_authenticated %}<a href="/call/{{ phone }}">  Позвонить</a>{% endif %}{% endfor %}</span>
                   </div>
               </div>
 

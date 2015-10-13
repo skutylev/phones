@@ -51,7 +51,7 @@
         <div class="col l3">
 
             <h5>Контакты</h5>
-            <p>Телефон:<br />{% for info in object.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br /> {% endfor %}{% endfor %}</p>
+            <p>Телефон:<br />{% for info in object.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}{% if user.is_authenticated %}<a href="/call/{{ phone }}"> Позвонить</a>{% endif %}<br /> {% endfor %}{% endfor %}</p>
             <p>E-mail:<br /><a target="_blank" href="mailto:{{ object.email }}">{{ object.email }}</a></p>
             <p>Адрес:<br />{% for str in street %} {{ str }}{% endfor %} {% for bld in building %}д. {{ bld }}{% endfor %}, {% for cmp in campus %} {{ cmp }}{% endfor %}-{% for off in office %}{{ off }}{% endfor %} </p>
             <p>Часы работы:<br />{{ object.work_hours }}</p>

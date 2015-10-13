@@ -19,7 +19,7 @@
     {% block head_js %}
         <script type="text/javascript" src="{% static "js/jquery-2.1.4.min.js" %}"></script>
         <script type="text/javascript" src="{% static "materialize/js/materialize.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "js/search_ajax.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/typehead.js" %}"></script>
     {% endblock %}
     {# Если уже используются базовые CSS и JS, то все остальное можно добавить в head_other #}
     {% block head_other %}{% endblock %}
@@ -36,16 +36,14 @@
                     <a href="/" class="brand-logo">Справочник МИТХТ</a>
                     <ul class="right hide-on-med-and-down">
                         <li>
-                            <form id="search" method="get" action="/search/?=">
-                                {% csrf_token %}
-                                <div class="input-field">
-                                    <input style="margin-bottom: 0;" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+
+                                <div id="remote" class="input-field">
+                                    <input style="margin-bottom: 0;" class="typeahead" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
                                     <label for="id_q"><i class="material-icons">search</i></label>
                                 </div>
-                            </form>
+
                         </li>
                         <li><a href="/">Телефоны</a></li>
-                        <li><a href="/units">Подразделения</a></li>
                         <li>|</li>
                         {% if user.is_authenticated %}
                         <li><a href="{% url 'account_logout' %}">ВЫЙТИ</a></li>
@@ -73,7 +71,6 @@
     {% block content %}{% endblock %}
     </main>
     {% block footer %}
-
             <footer>
             <div class="row" style="margin-bottom: 0;">
                 <div class="footer-nav">
@@ -89,8 +86,49 @@
                 </div>
                 </div>
             </footer>
-
     {% endblock %}
+<script type="text/javascript">
+    $(function(){
+        var person = new Bloodhound({
+            datumTokenizer: function (datum) {
+                return Bloodhound.tokenizers.whitespace(datum.tokens);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: 10,
+            remote: {
+                url: "/search/autocomplete/",
+                replace: function(url, query) {
+                    return url + "?q=" + query;
+                },
+                filter: function(person) {
+                    return $.map(person, function(data) {
+                        return {
+                            tokens: data.tokens,
+                            last_name: data.last_name,
+                            first_name: data.first_name,
+                            middle_name: data.middle_name,
+                            slug: data.slug
+                        }
+                    });
+                }
+            }
+        });
+        person.initialize();
+        $('#remote .typeahead').typeahead(null, {
+                name: 'person',
+                displayKey: 'last_name',
+                minLength: 3, // send AJAX request only after user type in at least X characters
+                source: person.ttAdapter(),
+                templates: {
+                    suggestion: function(data){
+                      return '<a style="color:red" href="#">' + data.last_name + ' ' + data.first_name + ' ' + data.middle_name + '</a>';
+                    }
+                }
+        }).on('typeahead:selected', function (obj, person) {
+            window.location.href = person.slug;
+        });
+    });
+</script>
 </body>
 {% endblock %}
 </html>

@@ -1,12 +1,9 @@
 {{ object.last_name }}
 {{ object.first_name }}
 {{ object.middle_name }}
-{{ object.unit }}
-{{ object.position }}
+{{ object.slug }}
 {{ object.degree }}
 {{ object.science_rank }}
-{{ object.address }}
 {{ object.work_hours }}
-{{ object.phone }}
 {{ object.email }}
 {{ object.get_absolute_url|safe }}

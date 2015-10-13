@@ -10,6 +10,7 @@ from braces.views import LoginRequiredMixin
 from django.views.decorators.http import require_GET
 import requests
 from django.contrib.auth.models import User
+import json
 
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
@@ -81,12 +82,35 @@ class UpdatePhone(LoginRequiredMixin, UpdateView):
         return obj
 
 
-def call(request):
-    if request.method == 'get':
+def call(request, phone):
+    # if request.method == 'get':
         opt = dict()
-        opt['caller'] = '818'
-        opt['callee'] = request.GET.get('phone')
+        opt['caller'] = '922'
+        opt['callee'] = phone
         opt['login'] = 'DTF:0101571'
         opt['password'] = '522677072'
         # opt['caller'] = request.user.profile.get_phone()
-        return requests.post('https://webcall.datafox.ru:8008/cgi-bin/app-callback.pl', caller='818', callee=request.GET.get('phone'), login='DTF:0101571', password='522677072')
+        r = requests.post('https://webcall.datafox.ru:8008/cgi-bin/app-callback.pl', data=opt, verify=False,)
+        html = "<html><body>Calling to number %s</body></html>" % phone
+        return HttpResponse(html)
+
+
+def autocomplete(request):
+    if request.GET.get('q', '') == '':
+        array = []
+    else:
+        sqs = SearchQuerySet().models(Person)
+        sqs_last_name = sqs.filter(last_name_auto=request.GET.get('q', ''))
+        sqs_result = sqs_last_name
+        array = []
+        print(sqs_result.count())
+        for result in sqs_result[:10]:
+            data = {"tokens": str(result.last_name).split(),
+                    "last_name": str(result.last_name),
+                    "first_name": str(result.first_name),
+                    "middle_name": str(result.middle_name),
+                    "slug": str(result.slug)
+                    }
+            array.insert(0, data)
+        print(array)
+    return HttpResponse(json.dumps(array), content_type='application/json')
