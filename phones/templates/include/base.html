@@ -94,7 +94,6 @@
                 return Bloodhound.tokenizers.whitespace(datum.tokens);
             },
             queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 10,
             remote: {
                 url: "/search/autocomplete/",
                 replace: function(url, query) {
@@ -114,20 +113,42 @@
             }
         });
         person.initialize();
-        $('#remote .typeahead').typeahead(null, {
-                name: 'person',
-                displayKey: 'last_name',
-                minLength: 3, // send AJAX request only after user type in at least X characters
-                source: person.ttAdapter(),
-                templates: {
-                    suggestion: function(data){
-                      return '<a style="color:red" href="#">' + data.last_name + ' ' + data.first_name + ' ' + data.middle_name + '</a>';
+        $('#remote .typeahead').typeahead({
+                    minLength: 2,
+                    highlight: true,
+                    hint: false,
+                    classNames: {
+                        dataset: 'collection',
+                        suggestion: 'red-text text-lighten-1 collection-item',
+                        highlight: 'tt-highlight red-text text-darken-2'
                     }
+                },
+                {
+                    name: 'person',
+                    displayKey: 'last_name',
+                    source: person.ttAdapter(),
+                    async: true,
+                    limit: 5,
+                    templates: {
+                        notFound: function(data){
+                            return '<li class="red-text text-lighten-1 collection-item">Не найдено</p>'
+                        },
+                        suggestion: function(data){
+                            return '<a href="#"><i class="material-icons left" style="line-height:45px;">person</i>' + data.last_name + ' ' + data.first_name + '.' + data.middle_name + '.' + '<br/><span class="grey-text text-darken-3">тел. ' +  data.phone + '</span></a>';
+                        },
                 }
         }).on('typeahead:selected', function (obj, person) {
-            window.location.href = person.slug;
+            window.location.href = '/' + person.slug;
         });
     });
+</script>
+
+
+<script>
+$(document).ready(function() {
+  // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+  $('.modal-trigger').leanModal();
+});
 </script>
 </body>
 {% endblock %}

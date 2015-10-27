@@ -4,11 +4,12 @@ import os
 from ckeditor.fields import RichTextField
 import mptt
 from mptt.models import MPTTModel, TreeForeignKey
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from phones.slugify import slugify
 from django.db.models import Q
 from sorl.thumbnail import ImageField
 from django_select2 import Select2ChoiceField
+
 from django_extensions.db.models import ModificationDateTimeField
 
 ############################
@@ -283,7 +284,7 @@ class PositionInUnit(models.Model):
 
 
 class Person(models.Model):
-    user = models.OneToOneField(User, verbose_name='Пользователь', related_name='profile', blank=True, null=True, )
+    user = models.OneToOneField(User, verbose_name='Пользователь', related_name='profile', blank=True, null=True, unique=True)
     last_name = models.CharField(max_length=30, verbose_name='Фамилия')
     first_name = models.CharField(max_length=30, verbose_name='Имя')
     middle_name = models.CharField(max_length=30, verbose_name='Отчество')
@@ -301,8 +302,11 @@ class Person(models.Model):
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
 
-    def get_phone(self):
-        return ',\n'.join([str(p) for p in PositionInUnit.phone.filter(person=self.id).first()])
+    # def get_phone(self, user):
+    #     return ',\n'.join([str(p) for p in PositionInUnit.phone.filter(user=user.id).first()])
+
+    def get_first_phone_main(self):
+        return ''.join(PositionInUnit.phone.filter(Q(person=self.id) and Q(is_main=True))[0])
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.first_name[:1] + self.middle_name[:1] + self.last_name)

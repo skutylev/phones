@@ -8,10 +8,9 @@ class PersonIndex(indexes.SearchIndex, indexes.Indexable):
     last_name = indexes.CharField(model_attr='last_name')
     first_name = indexes.CharField(model_attr='first_name')
     middle_name = indexes.CharField(model_attr='middle_name')
+    slug = indexes.CharField(model_attr='slug')
 
     last_name_auto = indexes.EdgeNgramField(model_attr='last_name')
-    first_name_auto = indexes.EdgeNgramField(model_attr='first_name')
-    middle_name_auto = indexes.EdgeNgramField(model_attr='middle_name')
 
 
     def get_model(self):

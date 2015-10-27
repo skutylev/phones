@@ -1,6 +1,6 @@
 {% extends "include/base.html" %}{% load thumbnail %}
 {% block content %}
-    <div class="row">
+    <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col s12 offset-m1 m10 offset-l1 l10">
         <ul class="collapsible" data-collapsible="accordion">
             <li>
@@ -18,9 +18,6 @@
         </ul>
         <h4>Последние добавленные</h4>
         <ul class="collapsible" data-collapsible="accordion">
-{% if user.is_authenticated %}
-    {{ user.get_profile }}
-{% endif %}
         {% for person in list %}
             <li>
 
@@ -39,13 +36,29 @@
                       <span class="truncate">{{ person.positioninunit_set.select_related.first.unit }} / {{ person.positioninunit_set.select_related.first.position }}</span>
                   </div>
                   <div class="col l2 m4 right" style="font-size: 0.8rem">
-                    <span>{% for phone in person.positioninunit_set.select_related.first.phone.all %}{{ phone }} {% if user.is_authenticated %}<a href="/call/{{ phone }}">  Позвонить</a>{% endif %}{% endfor %}</span>
+                    {% for phone in person.positioninunit_set.select_related.first.phone.all %}{{ phone }} {% endfor %}
                   </div>
               </div>
 
               <div class="collapsible-body">
                 <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
-                    <div class="col l3"><i class="material-icons left">phone</i>{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}{{ phone }}<br/>{% endfor %}{% endfor %}</div>
+                    <div class="col l3">{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}<p class="left" style="font-size: 1.33rem;">{{ phone }}{% if user.is_authenticated %}
+                        <a class="waves-effect waves-light btn btn-floating red lighten-1 modal-trigger" href="#{{ person.slug }}"><i class="material-icons">phone</i></a></p>
+                            <div id="{{ person.slug }}" class="modal">
+                                <div class="progress red lighten-5">
+                                    <div class="indeterminate red lighten-2"></div>
+                                </div>
+                                <div class="modal-content">
+
+                                  <h4>Звонок абоненту <strong class="red-text text-lighten-1">{{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}</strong>.</h4>
+                                  <p>Вы собираетесь позвонить абоненту с номером: <strong>{{ phone }}.</strong><br /> После того, как Вы нажмете кнопку Позвонить, Ваш телефон с номером: <strong>{{ callee }}</strong> зазвонит.<br /> Пожалуйста снимите трубку и ждите ответа.</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <a href="/call/{{ phone }}" class="modal-action modal-close btn-flat red-text text-lighten-1">Позвонить</a>
+                                  <a href="#!" class=" modal-action modal-close btn-flat">Закрыть</a>
+                                </div>
+                            </div>
+                    {% endif %}<br/>{% endfor %}{% endfor %}</div>
                     <div class="col l3"><i class="material-icons left">mail</i>{{ person.email }}</div>
                     <div class="col l4"><i class="material-icons left">place</i>{% for info in person.positioninunit_set.all %}{{ info.address }}{% endfor %}</div>
                     <div class="col l2">
