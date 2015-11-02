@@ -10,8 +10,6 @@ from django.db.models import Q
 from sorl.thumbnail import ImageField
 from django_select2 import Select2ChoiceField
 
-from django_extensions.db.models import ModificationDateTimeField
-
 ############################
 # Автоматическая генерация #
 # имени файла в ImageField #
@@ -27,31 +25,6 @@ def get_person_image_path(instance, filename):
 # Добавляем модели данных #
 ###########################
 
-
-class Prefix(models.Model):
-    prefix = models.CharField(max_length=9, verbose_name='Префикс', default='1')
-
-    def __str__(self):
-        return self.prefix
-
-    class Meta:
-        verbose_name = 'Префикс'
-        verbose_name_plural = 'Префиксы'
-        ordering = ['prefix']
-
-
-class AreaCode(models.Model):
-    area_code = models.CharField(max_length=6, verbose_name='Код города', default='1')
-
-    def __str__(self):
-        return self.area_code
-
-    class Meta:
-        verbose_name = 'Код города'
-        verbose_name_plural = 'Коды городов'
-        ordering = ['area_code']
-
-
 class PostCode(models.Model):
     post_code = models.CharField(max_length=6, verbose_name='Почтовый индекс', default='1')
 
@@ -66,7 +39,6 @@ class PostCode(models.Model):
 
 class City(models.Model):
     city = models.CharField(max_length=10, verbose_name='Город', default='1')
-    area_code = models.ManyToManyField(AreaCode, verbose_name="Код города", default='1')
 
     def __str__(self):
         return self.city
@@ -104,7 +76,6 @@ class Building(models.Model):
 
 class Campus(models.Model):
     campus = models.CharField(max_length=5, verbose_name='Корпус', default='1')
-    prefix = models.ManyToManyField(Prefix, verbose_name='Префикс', default='1')
 
     def __str__(self):
         return self.campus
@@ -141,23 +112,35 @@ class WorkHours(models.Model):
 
 
 class Phone(models.Model):
-    country_code = models.CharField(max_length=2, verbose_name='Код страны', default='+7')
-    area_code = models.ForeignKey(AreaCode)
-    prefix = models.ForeignKey(Prefix)
-    number = models.CharField(max_length=6, verbose_name='Номер телефона')
-    is_outer = models.BooleanField(default=False, verbose_name='Внешний')
+    TYPE_CHOICES = (
+        ('0', 'Внутренний'),
+        ('1', 'Внешний'),
+        ('2', 'Мобильный'),
+    )
+    AREA_CODE_CHOICES = (
+        ('495', '495'),
+        ('499', '499'),
+        ('925', '925'),
+    )
+    PREFIX_CHOICES = (
+        ('246-05-55', '246-05-55'),
+        ('600-8', '600-8'),
+        ('210-0', '210-0'),
+    )
+
+    country_code = models.CharField(max_length=2, verbose_name='Код страны', default='+7',)
+    area_code = models.CharField(max_length=15, choices=AREA_CODE_CHOICES, verbose_name='Код города', default='495')
+    prefix = models.CharField(max_length=15, choices=PREFIX_CHOICES, verbose_name='Префикс', default='246-05-55')
+    number = models.CharField(max_length=16, verbose_name='Номер телефона')
+    phone_type = models.CharField(max_length=255, choices=TYPE_CHOICES, verbose_name='Тип', default='0')
 
     def __str__(self):
-        if self.is_outer is False:
-            # return u'внутр. %s' % (self.number,)
-            return self.number
-        else:
-            return u'%s (%s) %s%s' % (self.country_code, self.area_code, self.prefix, self.number)
+        return self.number
 
     class Meta:
         verbose_name = 'Телефон'
         verbose_name_plural = 'Телефоны'
-        ordering = ['area_code']
+        ordering = ['phone_type']
 
 
 class Address(models.Model):
@@ -242,13 +225,8 @@ class Unit(MPTTModel, models.Model):
     def get_absolute_url(self):
         return "/units/%s/" % self.slug
 
-    # def get_person_in_unit(self):
-    #     return Person.objects.filter(Q(unit=self.id))
-    #     #return Person.objects.select_related('unit').get(unit=self.id)
-
     def __str__(self):
         return self.unit_name
-
 mptt.register(Unit,)
 
 
@@ -302,11 +280,8 @@ class Person(models.Model):
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])
 
-    # def get_phone(self, user):
-    #     return ',\n'.join([str(p) for p in PositionInUnit.phone.filter(user=user.id).first()])
-
     def get_first_phone_main(self):
-        return ''.join(PositionInUnit.phone.filter(Q(person=self.id) and Q(is_main=True))[0])
+        return PositionInUnit.objects.filter(person=self.id).select_related('phone__number').values('phone__number')[0].get('phone__number')
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.first_name[:1] + self.middle_name[:1] + self.last_name)
@@ -314,10 +289,6 @@ class Person(models.Model):
 
     def get_absolute_url(self):
         return "/%s/" % self.slug
-
-    # def get_subordinates(self):
-    #     subordinates = Person.objects.filter(chief_id=self.id)
-    #     return subordinates
 
     def get_full_phone(self):
         full_phone = Person.phone.select_related('phone')

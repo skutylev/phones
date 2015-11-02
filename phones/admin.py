@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from phones.models import Organization, Unit, Position, Prefix, AreaCode, PostCode, City, Street, Building, Campus, Office, WorkHours, Phone, Address, Person, Degree, ScienceRank, Edu, PositionInUnit
+from phones.models import Organization, Unit, Position, PostCode, City, Street, Building, Campus, Office, WorkHours, Phone, Address, Person, Degree, ScienceRank, Edu, PositionInUnit
 from django.forms import ModelForm
 from suit.widgets import EnclosedInput
 from suit.admin import SortableStackedInline
@@ -28,16 +28,6 @@ class PositionAdmin(admin.ModelAdmin):
 admin.site.register(Position, PositionAdmin)
 
 
-class PrefixAdmin(admin.ModelAdmin):
-    list_display = ("prefix", )
-admin.site.register(Prefix, PrefixAdmin)
-
-
-class AreaCodeAdmin(admin.ModelAdmin):
-    list_display = ("area_code", )
-admin.site.register(AreaCode, AreaCodeAdmin)
-
-
 class PostCodeAdmin(admin.ModelAdmin):
     list_display = ("post_code", )
 admin.site.register(PostCode, PostCodeAdmin)
@@ -45,7 +35,6 @@ admin.site.register(PostCode, PostCodeAdmin)
 
 class CityAdmin(admin.ModelAdmin):
     list_display = ("city", )
-    filter_horizontal = ("area_code", )
 admin.site.register(City, CityAdmin)
 
 
@@ -62,7 +51,6 @@ admin.site.register(Building, BuildingAdmin)
 
 class CampusAdmin(admin.ModelAdmin):
     list_display = ("campus", )
-    filter_horizontal = ("prefix", )
 admin.site.register(Campus, CampusAdmin)
 
 
@@ -90,8 +78,10 @@ class PhoneInline(SortableStackedInline):
 
 class PhoneAdmin(admin.ModelAdmin):
     form = PhoneForm
-    list_display = ("country_code", "area_code", "prefix", "number", "is_outer",)
-    list_editable = ("is_outer",)
+    list_display = ("country_code", "area_code", "prefix", "number", "phone_type", )
+    list_display_links = ('number',)
+    list_filter = ('phone_type',)
+    search_fields = ('number',)
 admin.site.register(Phone, PhoneAdmin)
 
 
@@ -222,6 +212,7 @@ class PersonResource(resources.ModelResource):
         fields = ('short_name', 'phone')
         export_order = ('short_name', 'phone')
 
+
 class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
     model = PositionInUnit
     extra = 1
@@ -232,6 +223,7 @@ class PositionInUnitInline(SortableStackedInline, admin.TabularInline):
     form = PositionInUnitForm
     filter_horizontal = ("phone", )
 
+
 class PositionInUnitAdmin(admin.ModelAdmin):
     form = PositionInUnitForm
     filter_horizontal = ("phone", )
@@ -240,13 +232,13 @@ admin.site.register(PositionInUnit, PositionInUnitAdmin)
 
 
 class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ("last_name", "first_name", "middle_name", "email", "publish_date", "publish", )
+    list_display = ("last_name", "first_name", "middle_name", "email", "birthday", "publish_date", "publish", )
     list_editable = ("publish",)
-    # list_filter = ("unit",)
-    # filter_horizontal = ("unit", "position", "phone", "address",)
-    search_fields = ("last_name",)
+    show_full_result_count=True
+    search_fields = ("last_name", "positioninunit__phone__number")
     resource_class = PersonResource
     inlines = (EduInline, PositionInUnitInline)
+    list_per_page = 25
 
     fieldsets = [
         (None, {

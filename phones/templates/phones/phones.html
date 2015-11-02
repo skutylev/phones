@@ -36,20 +36,21 @@
                       <span class="truncate">{{ person.positioninunit_set.select_related.first.unit }} / {{ person.positioninunit_set.select_related.first.position }}</span>
                   </div>
                   <div class="col l2 m4 right" style="font-size: 0.8rem">
-                    {% for phone in person.positioninunit_set.select_related.first.phone.all %}{{ phone }} {% endfor %}
+                    тел. {{ person.get_first_phone_main }}
                   </div>
               </div>
 
               <div class="collapsible-body">
                 <div class="row" style="padding: 20px; margin: 5px; border: 1px #ee6e73 dashed;">
-                    <div class="col l3">{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}<p class="left" style="font-size: 1.33rem;">{{ phone }}{% if user.is_authenticated %}
+                    <div class="col l3">{% for info in person.positioninunit_set.all %}{% for phone in info.phone.all %}
+                        <p class="left" style="font-size: 1.33rem;">{{ phone }}
+                    {% if user.is_authenticated %}
                         <a class="waves-effect waves-light btn btn-floating red lighten-1 modal-trigger" href="#{{ person.slug }}"><i class="material-icons">phone</i></a></p>
                             <div id="{{ person.slug }}" class="modal">
                                 <div class="progress red lighten-5">
                                     <div class="indeterminate red lighten-2"></div>
                                 </div>
                                 <div class="modal-content">
-
                                   <h4>Звонок абоненту <strong class="red-text text-lighten-1">{{ person.last_name}} {{ person.first_name| slice:":1" }}.{{ person.middle_name| slice:":1" }}</strong>.</h4>
                                   <p>Вы собираетесь позвонить абоненту с номером: <strong>{{ phone }}.</strong><br /> После того, как Вы нажмете кнопку Позвонить, Ваш телефон с номером: <strong>{{ callee }}</strong> зазвонит.<br /> Пожалуйста снимите трубку и ждите ответа.</p>
                                 </div>
@@ -58,7 +59,8 @@
                                   <a href="#!" class=" modal-action modal-close btn-flat">Закрыть</a>
                                 </div>
                             </div>
-                    {% endif %}<br/>{% endfor %}{% endfor %}</div>
+                    {% endif %}
+                    {% endfor %}{% endfor %} </div>
                     <div class="col l3"><i class="material-icons left">mail</i>{{ person.email }}</div>
                     <div class="col l4"><i class="material-icons left">place</i>{% for info in person.positioninunit_set.all %}{{ info.address }}{% endfor %}</div>
                     <div class="col l2">

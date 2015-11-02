@@ -9,9 +9,9 @@ class PersonIndex(indexes.SearchIndex, indexes.Indexable):
     first_name = indexes.CharField(model_attr='first_name')
     middle_name = indexes.CharField(model_attr='middle_name')
     slug = indexes.CharField(model_attr='slug')
+    phone = indexes.CharField(model_attr='get_first_phone_main')
 
     last_name_auto = indexes.EdgeNgramField(model_attr='last_name')
-
 
     def get_model(self):
         return Person
@@ -23,6 +23,10 @@ class PersonIndex(indexes.SearchIndex, indexes.Indexable):
 class UnitIndex(indexes.SearchIndex, indexes.Indexable):
 
     text = indexes.SearchField(document=True, use_template=True)
+    unit_name = indexes.CharField(model_attr='unit_name')
+    unit_short_name = indexes.CharField(model_attr='unit_short_name')
+
+    unit_name_auto = indexes.EdgeNgramField(model_attr='unit_name')
 
     def get_model(self):
         return Unit

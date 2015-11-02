@@ -2,7 +2,7 @@ from django.conf.urls import include, url, patterns
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from phones.views import ListPhones, DetailPhone, UpdatePhone, ListUnits, call, autocomplete
+from phones.views import ListPhones, DetailPhone, UpdatePhone, ListUnits, call, autocomplete, autocomplete_unit
 # from phones.views import UnitSearchView
 
 urlpatterns = patterns('',
@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^units/(?P<slug>[-\w]+)/$', ListUnits.as_view(), name='units'),
     url(r'^search/$', include('haystack.urls')),
     url(r'^search/autocomplete/$', autocomplete),
+    url(r'^search/autocomplete/unit/$', autocomplete_unit),
     url(r'^(?P<slug>[-\w]+)/edit/$', UpdatePhone.as_view(template_name='phones/update.html'), name='edit'),
     url(r'^(?P<slug>[-\w]+)/$', DetailPhone.as_view(), name='detail'),
     url(r'^publications/', include('publications.urls')),

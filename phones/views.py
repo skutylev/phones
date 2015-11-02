@@ -115,6 +115,24 @@ def autocomplete(request):
                     "last_name": str(result.last_name),
                     "first_name": str(result.first_name[0]),
                     "middle_name": str(result.middle_name[0]),
+                    "slug": str(result.slug),
+                    "phone": str(result.phone)
+                    }
+            array.insert(0, data)
+        print(array)
+    return HttpResponse(json.dumps(array), content_type='application/json')
+
+def autocomplete_unit(request):
+    if request.GET.get('q', '') == '':
+        array = []
+    else:
+        array = []
+        sqs = SearchQuerySet().autocomplete(unit_name_auto=request.GET.get('q', '')).order_by('unit_name')
+        print(sqs.count())
+        for result in sqs:
+            data = {"tokens": str(result.unit_name).split(),
+                    "unit_name": str(result.unit_name),
+                    "unit_short_name": str(result.unit_short_name),
                     "slug": str(result.slug)
                     }
             array.insert(0, data)

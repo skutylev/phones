@@ -52,7 +52,17 @@
                         {% endif %}
                     </ul>
                     </div>
+                             <ul id="slide-out" class="side-nav">
+                    <li><a href="#!">Телефоны</a></li>
+                    <li>
+                    <div id="remote" class="input-field">
+                        <input style="margin-bottom: 0;" class="typeahead" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+                        <label for="id_q"><i class="material-icons">search</i></label>
+                    </div>
+                    </li>
+             </ul><a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
                 </div>
+
             </nav>
         </div>
         </header>
@@ -88,32 +98,59 @@
             </footer>
     {% endblock %}
 <script type="text/javascript">
-    $(function(){
-        var person = new Bloodhound({
-            datumTokenizer: function (datum) {
-                return Bloodhound.tokenizers.whitespace(datum.tokens);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: {
-                url: "/search/autocomplete/",
-                replace: function(url, query) {
-                    return url + "?q=" + query;
-                },
-                filter: function(person) {
-                    return $.map(person, function(data) {
-                        return {
-                            tokens: data.tokens,
-                            last_name: data.last_name,
-                            first_name: data.first_name,
-                            middle_name: data.middle_name,
-                            slug: data.slug
-                        }
-                    });
-                }
-            }
-        });
-        person.initialize();
-        $('#remote .typeahead').typeahead({
+$(function(){
+	var person = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return Bloodhound.tokenizers.whitespace(datum.tokens);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: "/search/autocomplete/",
+			replace: function(url, query) {
+				return url + "?q=" + query;
+			},
+			filter: function(person) {
+				return $.map(person, function(data) {
+					return {
+						tokens: data.tokens,
+						last_name: data.last_name,
+						first_name: data.first_name,
+						middle_name: data.middle_name,
+						slug: data.slug,
+						phone: data.phone
+					}
+				});
+			}
+		}
+	});
+
+	var unit = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return Bloodhound.tokenizers.whitespace(datum.tokens);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: "/search/autocomplete/unit/",
+			replace: function(url, query) {
+				return url + "?q=" + query;
+			},
+			filter: function(unit) {
+				return $.map(unit, function(data) {
+					return {
+						tokens: data.tokens,
+						unit_name: data.unit_name,
+                        unit_short_name: data.unit_short_name,
+						slug: data.slug
+					}
+				});
+			}
+		}
+	});
+
+    person.initialize();
+	unit.initialize();
+
+  $('#remote .typeahead').typeahead({
                     minLength: 2,
                     highlight: true,
                     hint: false,
@@ -128,19 +165,38 @@
                     displayKey: 'last_name',
                     source: person.ttAdapter(),
                     async: true,
-                    limit: 5,
+                    limit: 10,
                     templates: {
+						header: '<p class="red-text text-lighten-1" style="font-size:1.1rem; line-height:1.1rem; text-align:center;">Сотрудники</p>',
                         notFound: function(data){
-                            return '<li class="red-text text-lighten-1 collection-item">Не найдено</p>'
+                            return '<li class="red-text text-lighten-1 collection-item">Сотрудники не найдены</p>'
                         },
                         suggestion: function(data){
                             return '<a href="#"><i class="material-icons left" style="line-height:45px;">person</i>' + data.last_name + ' ' + data.first_name + '.' + data.middle_name + '.' + '<br/><span class="grey-text text-darken-3">тел. ' +  data.phone + '</span></a>';
                         },
                 }
+        },
+				{
+                    name: 'unit',
+                    displayKey: 'unit_name',
+                    source: unit.ttAdapter(),
+                    async: true,
+                    limit: 3,
+                    templates: {
+						header: '<p class="red-text text-lighten-1" style="font-size:1.1rem; line-height:1.1rem; text-align:center;">Подразделения</p>',
+                        notFound: function(data){
+                            return '<li class="red-text text-lighten-1 collection-item">Подразделения не найдены</p>'
+                        },
+                        suggestion: function(data){
+                            return '<a href="#"><i class="material-icons left" style="line-height:20px;">group</i><span>' + data.unit_name + '</span></a>';
+                        },
+                }
         }).on('typeahead:selected', function (obj, person) {
             window.location.href = '/' + person.slug;
         });
-    });
+
+
+});
 </script>
 
 
@@ -148,6 +204,12 @@
 $(document).ready(function() {
   // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
   $('.modal-trigger').leanModal();
+});
+
+$('.button-collapse').sideNav({
+  menuWidth: 300, // Default is 240
+  edge: 'right', // Choose the horizontal origin
+  closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
 });
 </script>
 </body>
