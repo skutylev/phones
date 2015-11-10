@@ -2,15 +2,17 @@ from django.conf.urls import include, url, patterns
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from phones.views import ListPhones, DetailPhone, UpdatePhone, ListUnits, call, autocomplete, autocomplete_unit
+from phones.views import ListPhones, DetailPhone, UpdatePhone, ListUnits, call, autocomplete, autocomplete_unit, Main
+
 # from phones.views import UnitSearchView
 
 urlpatterns = patterns('',
+    url(r'^$', Main.as_view(), name='main'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^pubs/', include('pubs.urls'), name='pubs'),
-    url(r'^$', ListPhones.as_view(), name='list'),
+    url(r'^all/$', ListPhones.as_view(), name='list'),
     # url(r'^units/$', ListUnits.as_view(), name='units'),
     url(r'^units/(?P<slug>[-\w]+)/$', ListUnits.as_view(), name='units'),
     url(r'^search/$', include('haystack.urls')),

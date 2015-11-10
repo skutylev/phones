@@ -33,7 +33,7 @@
             <nav class="light-blue darken-1">
                 <div class="nav-wrapper">
                     <div class="col s12 offset-m1 m10 offset-l1 l10">
-                    <a href="/" class="brand-logo">Справочник МИТХТ</a>
+                    <a href="/" class="brand-logo"><img style="margin-bottom: -8px; margin-left: 10px; margin-right: 10px" src="{% static "img/logo.png" %}"><span>Справочник МИТХТ</span></a>
                     <ul class="right hide-on-med-and-down">
                         <li>
 
@@ -43,7 +43,7 @@
                                 </div>
 
                         </li>
-                        <li><a href="/">Телефоны</a></li>
+                        <li><a href="/all">Все телефоны</a></li>
                         <li>|</li>
                         {% if user.is_authenticated %}
                         <li><a href="{% url 'account_logout' %}">ВЫЙТИ</a></li>
@@ -53,7 +53,7 @@
                     </ul>
                     </div>
                              <ul id="slide-out" class="side-nav">
-                    <li><a href="#!">Телефоны</a></li>
+                    <li><a href="/all">Все телефоны</a></li>
                     <li>
                     <div id="remote" class="input-field">
                         <input style="margin-bottom: 0;" class="typeahead" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
@@ -188,7 +188,7 @@ $(function(){
                             return '<li class="red-text text-lighten-1 collection-item">Подразделения не найдены</p>'
                         },
                         suggestion: function(data){
-                            return '<a href="#"><i class="material-icons left" style="line-height:20px;">group</i><span>' + data.unit_name + '</span></a>';
+                            return '<a href="#"><i class="material-icons left" style="line-height:20px;">domain</i><span>' + data.unit_name + '</span></a>';
                         },
                 }
         }).on('typeahead:selected', function (obj, person) {

@@ -9,6 +9,7 @@ from phones.slugify import slugify
 from django.db.models import Q
 from sorl.thumbnail import ImageField
 from django_select2 import Select2ChoiceField
+import datetime
 
 ############################
 # Автоматическая генерация #
@@ -294,10 +295,25 @@ class Person(models.Model):
         full_phone = Person.phone.select_related('phone')
         return full_phone
 
+    def birthday_soon(self):
+        days_to_date = self.birthday.day - datetime.date.today().day
+        months_to_date = self.birthday.month - datetime.date.today().month
+        years_to_date = self.birthday.year - datetime.date.today().year
+        if months_to_date == 0 and days_to_date == 1 and years_to_date >= 50 and years_to_date % 5 == 0:
+            return 'Завтра %s %s празднует Юбилей' % (self.first_name, self.middle_name)
+        elif months_to_date == 0 and days_to_date == 1:
+            return 'Завтра %s %s празднует День рождения' % (self.first_name, self.middle_name)
+        elif months_to_date == 0 and days_to_date == 0 and years_to_date >= 50 and years_to_date % 5 == 0:
+            return 'Сегодня %s %s празднует Юбилей' % (self.first_name, self.middle_name)
+        elif months_to_date == 0 and days_to_date == 0:
+            return 'Сегодня %s %s празднует День рождения' % (self.first_name, self.middle_name)
+        else:
+            return False
+
     class Meta:
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
-        ordering = ['-publish_date']
+        ordering = ['last_name']
 
 
 class Edu(models.Model):

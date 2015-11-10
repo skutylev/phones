@@ -12,6 +12,13 @@ import requests
 from django.contrib.auth.models import User
 import json
 
+
+class Main(ListView):
+    template_name = 'phones/main.html'
+    model = Person
+    context_object_name = 'main'
+
+
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
     model = Person

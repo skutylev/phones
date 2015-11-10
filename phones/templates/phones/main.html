@@ -1,0 +1,76 @@
+{% extends "include/base.html" %}{% load thumbnail %}{% load fontawesome %}
+{% block content %}
+    <div class="row ">
+        <div class="col s12 offset-m1 m10 offset-l1 l10">
+        <h2>Добро пожаловать в Телефонный справочник МИТХТ!</h2>
+            <p>В данном справочнике Вы можете найти абонента по его Фамилии или Подразделению в котором он работает.</p>
+            <p>
+                <span class="blue-text text-darken-1">Из телефонной сети МИТХТ достаточно набрать внутренний трехзначный номер абонента (например 825)</span><br />
+                <span class="red-text text-darken-1">За пределами телефонной сети МИТХТ необходимо набрать +7(495)246-05-55 и внутренний номер абонента (например +7(495)246-05-55 * 825), либо внешний номер (если он имеется)</span>
+            </p>
+            <h4>В справочнике содержится следующая информация:</h4>
+            <ul class="collection">
+                <li class="collection-item valign-wrapper"><i class="material-icons">person</i>&nbsp;&nbsp;<span>Фамилия Имя Отчество</span></li>
+                <li class="collection-item valign-wrapper"><i class="material-icons">domain</i>&nbsp;&nbsp;<span>Должность и Подразделение</span></li>
+                <li class="collection-item valign-wrapper"><i class="material-icons">phone</i>&nbsp;&nbsp;<span>Номер телефона</span></li>
+                <li class="collection-item valign-wrapper"><i class="material-icons">email</i>&nbsp;&nbsp;<span>e-mail</span></li>
+                <li class="collection-item valign-wrapper"><i class="material-icons">location_on</i>&nbsp;&nbsp;<span>Адрес</span></li>
+                <li class="collection-item valign-wrapper"><i class="material-icons">account_circle</i>&nbsp;&nbsp;<span>Руководитель</span></li>
+                <li class="collection-item valign-wrapper"><i class="material-icons">group</i>&nbsp;&nbsp;<span>Подчиненные(если имеются)</span></li>
+            </ul>
+            <p class="red-text text-lighten-1">Для того, чтобы найти абонента в справочнике, наберите его Фамилию или Подразделение в строке "Поиск" и выберите один из предложенных вариантов, нажав на ссылку с Фамилией абонента.<br />
+                Также вы можете посмотреть всех абонентов, нажав на ссылку "Все телефоны"</p>
+            <h4>Часто используемые телефоны:</h4>
+            <table class="highlight responsive-table">
+                <thead>
+                  <tr>
+                      <th data-field="name">Абонент</th>
+                      <th data-field="in_phone">Внутренний номер</th>
+                      <th data-field="out_phone">Внешний номер</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>Приемная ректора</td>
+                    <td>206</td>
+                    <td>+7 (499) 600-82-06</td>
+                  </tr>
+                  <tr>
+                    <td>Канцелярия</td>
+                    <td>825</td>
+                    <td>+7 (499) 600-88-25</td>
+                  </tr>
+                  <tr>
+                    <td>Приемная комиссия</td>
+                    <td>249</td>
+                    <td>+7 (499) 600-82-49</td>
+                  </tr>
+                  <tr>
+                    <td>Директор по экономике</td>
+                    <td>218</td>
+                    <td>+7 (499) 600-82-18</td>
+                  </tr>
+                  <tr>
+                    <td>Проректор по уч. работе</td>
+                    <td>211</td>
+                    <td>+7 (499) 600-82-11</td>
+                  </tr>
+                  <tr>
+                    <td>Проректор по НИД</td>
+                    <td>202</td>
+                    <td>+7 (499) 600-82-02</td>
+                  </tr>
+                  <tr>
+                    <td>Диспетчер МИТХТ Ю-З</td>
+                    <td>765</td>
+                    <td>+7 (499) 600-87-65</td>
+                  </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+{% endblock %}
+

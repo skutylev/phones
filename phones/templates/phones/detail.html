@@ -3,14 +3,21 @@
     <div class="row">
         <div class="col s10 offset-m1 m8 offset-l1 l8">
             <h1>{{ object.last_name }} {{ object.first_name }} {{ object.middle_name }}</h1>
-            <p>{% for info in object.positioninunit_set.all %}
-                {{ info.position }}: <a href="{{ info.unit.get_absolute_url }}">{{ info.unit }}</a><br />
+           <p class="valign-wrapper">{% for info in object.positioninunit_set.all %}
+                <i class="material-icons left">domain</i>&nbsp;&nbsp;<span>{{ info.position }}: <a href="{{ info.unit.get_absolute_url }}">{{ info.unit }}</a></span><br />
              {% endfor %}</p>
+        {% if object.birthday_soon  %}
+                <i class="red-text text-lighten-1 material-icons">cake</i> <span>{{ object.birthday_soon }}</span>
+        {% endif %}
         </div>
-        <div class="col s2">
-            {% thumbnail object.photo "150x150" crop="center" as im %}
-                <img style="border: 1px #ee6e73 solid;" class="circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-            {% endthumbnail %}
+        <div class="col s2 valign-wrapper">
+            {% if object.photo %}
+                {% thumbnail object.photo "150x150" crop="center" as im %}
+                    <img style="border: 1px #ee6e73 solid;" class="circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            {% else %}
+                <i style="border: 1px #e0e0e0 solid; font-size: 150px;" class="material-icons grey-text text-lighten-2 circle">account_circle</i>
+            {% endif %}
         </div>
     </div>
     <div class="row">
