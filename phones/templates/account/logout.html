@@ -1,0 +1,28 @@
+{% extends "include/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+
+{% block content %}
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col s12 offset-m1 m10 offset-l1 l10">
+        <h1 class="red-text text-darken-1">Выйти</h1>
+
+        <p>Вы уверены что хотите выйти?</p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+          {% csrf_token %}
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+          {% endif %}
+            <button class="btn red darken-1 waves-effect waves-light" type="submit" name="action">Выйти
+                <i class="material-icons right">exit_to_app</i>
+            </button>
+        </form>
+
+        </div>
+    </div>
+
+
+{% endblock %}
