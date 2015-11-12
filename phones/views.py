@@ -19,6 +19,12 @@ class Main(ListView):
     context_object_name = 'main'
 
 
+class Forbidden(ListView):
+    template_engine = 'phones/forbidden.html'
+    model = Person
+    context_object_name = 'forbidden'
+
+
 class ListPhones(ListView):
     template_name = 'phones/phones.html'
     model = Person

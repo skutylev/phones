@@ -213,7 +213,8 @@ SOCIALACCOUNT_PROVIDERS = \
         }
     }
 
-ACCOUNT_ADAPTER = 'phones.adapter.MyAccountAdapter'
 
+ACCOUNT_ADAPTER = 'phones.adapter.MyAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'phones.adapter.MySocialAccountAdapter'
 THUMBNAIL_PREFIX = 'images/cache/'
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
