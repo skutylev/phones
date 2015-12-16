@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 import json
 
 
+
 class Main(ListView):
     template_name = 'phones/main.html'
     model = Person
@@ -20,7 +21,7 @@ class Main(ListView):
 
 
 class Forbidden(ListView):
-    template_engine = 'phones/forbidden.html'
+    template_name = 'phones/forbidden.html'
     model = Person
     context_object_name = 'forbidden'
 
@@ -30,6 +31,7 @@ class ListPhones(ListView):
     model = Person
     context_object_name = 'list'
     paginate_by = 15
+    alphabet_filter = 'last_name'
 
     def get_context_data(self, **kwargs):
         context = super(ListPhones, self).get_context_data(**kwargs)

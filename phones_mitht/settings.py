@@ -175,7 +175,7 @@ HAYSTACK_CONNECTIONS = {
 # Django Suit configuration example
 SUIT_CONFIG = {
     # header
-    'ADMIN_NAME': 'Справочник МИТХТ',
+    'ADMIN_NAME': 'Справочник МТУ (кампус МИТХТ)',
     'HEADER_DATE_FORMAT': 'l, j E Y',
     'HEADER_TIME_FORMAT': 'H:i',
 

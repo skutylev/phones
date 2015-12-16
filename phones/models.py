@@ -10,6 +10,9 @@ from django.db.models import Q
 from sorl.thumbnail import ImageField
 from django_select2 import Select2ChoiceField
 import datetime
+from django.dispatch import receiver
+from allauth.socialaccount.signals import social_account_added
+
 
 ############################
 # Автоматическая генерация #
@@ -309,6 +312,14 @@ class Person(models.Model):
             return 'Сегодня %s %s празднует День рождения' % (self.first_name, self.middle_name)
         else:
             return False
+
+
+    # @receiver(social_account_added)
+    # def connect_with_sociallogin(self, *args, **kwargs):
+    #     if self.email == request.user.email or self.last_name == request.user.last_name and self.first_name == request.user.given_name:
+    #         self.user = request.user.name
+    #         super().update(*args, **kwargs)
+
 
     class Meta:
         verbose_name = 'Сотрудник'
