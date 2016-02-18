@@ -39,10 +39,18 @@
                         <li>
 
                                 <div id="remote" class="input-field">
-                                    <input style="margin-bottom: 0;" class="typeahead" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Поиск">
+                                    <input style="margin-bottom: 0;" class="typeahead" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Найти сотрудника">
                                     <label for="id_q"><i class="material-icons">search</i></label>
                                 </div>
 
+
+
+                        </li>
+                        <li>
+                             <div id="remote1" class="input-field">
+                                    <input style="margin-bottom: 0;" class="typeahead" autocomplete="off" required id="id_q" name="q" type="search" placeholder="Найти подразделение">
+                                    <label for="id_q">
+                                </div>
                         </li>
                         <li><a href="/all">Все телефоны</a></li>
                         <li>|</li>
@@ -176,15 +184,28 @@ $(function(){
                             return '<a href="#"><i class="material-icons left" style="line-height:45px;">person</i>' + data.last_name + ' ' + data.first_name + '.' + data.middle_name + '.' + '<br/><span class="grey-text text-darken-3">тел. ' +  data.phone + '</span></a>';
                         },
                 }
-        },
-				{
+        }).on('typeahead:selected', function (obj, person) {
+            window.location.href = '/' + person.slug;
+        });
+
+  $('#remote1 .typeahead').typeahead({
+                    minLength: 2,
+                    highlight: true,
+                    hint: false,
+                    classNames: {
+                        dataset: 'collection',
+                        suggestion: 'red-text text-lighten-1 collection-item',
+                        highlight: 'tt-highlight red-text text-darken-2'
+                    }
+                },
+                {
                     name: 'unit',
                     displayKey: 'unit_name',
                     source: unit.ttAdapter(),
                     async: true,
                     limit: 3,
                     templates: {
-						header: '<p class="red-text text-lighten-1" style="font-size:1.1rem; line-height:1.1rem; text-align:center;">Подразделения</p>',
+                        header: '<p class="red-text text-lighten-1" style="font-size:1.1rem; line-height:1.1rem; text-align:center;">Подразделения</p>',
                         notFound: function(data){
                             return '<li class="red-text text-lighten-1 collection-item">Подразделения не найдены</p>'
                         },
@@ -192,10 +213,9 @@ $(function(){
                             return '<a href="#"><i class="material-icons left" style="line-height:20px;">domain</i><span>' + data.unit_name + '</span></a>';
                         },
                 }
-        }).on('typeahead:selected', function (obj, person) {
-            window.location.href = '/' + person.slug;
+        }).on('typeahead:selected', function (obj, unit) {
+            window.location.href = '/units/' + unit.slug;
         });
-
 
 });
 </script>

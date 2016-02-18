@@ -137,6 +137,7 @@ def autocomplete(request):
         print(array)
     return HttpResponse(json.dumps(array), content_type='application/json')
 
+
 def autocomplete_unit(request):
     if request.GET.get('q', '') == '':
         array = []

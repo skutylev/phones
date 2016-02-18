@@ -25,7 +25,7 @@ class UnitIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.SearchField(document=True, use_template=True)
     unit_name = indexes.CharField(model_attr='unit_name')
     unit_short_name = indexes.CharField(model_attr='unit_short_name')
-
+    slug = indexes.CharField(model_attr='slug')
     unit_name_auto = indexes.EdgeNgramField(model_attr='unit_name')
 
     def get_model(self):
