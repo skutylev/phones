@@ -2,7 +2,6 @@ from django.conf.urls import patterns, url, include
 from phones.views import ListPhones, DetailPhone, CreatePhone, UpdatePhone, Main
 
 urlpatterns = patterns('',
-
     url(r'^$', Main.as_view(), name='main'),
     url(r'^all/$', ListPhones.as_view(), name='list'),
     url(r'^search/$', include('haystack.urls')),
