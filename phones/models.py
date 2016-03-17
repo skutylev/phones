@@ -281,7 +281,8 @@ class Person(models.Model):
     # modified_date = models.DateTimeField(auto_now=True)
     publish = models.BooleanField(default=False, verbose_name='Опубликовано')
 
-
+    def get_unit(self):
+        return PositionInUnit.objects.filter(person=self.id).select_related('unit__unit_name').values('unit__unit_name')[0].get('unit__unit_name')
 
     def __str__(self):
         return u'%s %s.%s.' % (self.last_name, self.first_name[:1], self.middle_name[:1])

@@ -232,10 +232,10 @@ admin.site.register(PositionInUnit, PositionInUnitAdmin)
 
 
 class PersonAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ("last_name", "first_name", "middle_name", "email", "birthday", "publish_date", "publish", )
+    list_display = ("last_name", "first_name", "middle_name", "email", "birthday", "publish_date", "publish", "get_unit")
     list_editable = ("publish",)
-    show_full_result_count=True
-    search_fields = ("last_name", "positioninunit__phone__number")
+    show_full_result_count = True
+    search_fields = ("last_name", "positioninunit__phone__number", "positioninunit__unit__unit_name")
     resource_class = PersonResource
     inlines = (EduInline, PositionInUnitInline)
     list_per_page = 25
