@@ -2,26 +2,11 @@
 {% block content %}
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col s12 offset-m1 m10 offset-l1 l10">
-        <ul class="collapsible" data-collapsible="accordion">
-            <li>
-                <div class="collapsible-header"><span>Часто используемые телефоны: <i class="material-icons right">expand_more</i></span> </div>
-                <div class="collapsible-body">
-                    <p>Приемная ректора +7 (499) 600-82-06</p>
-                    <p>Канцелярия +7 (499) 600-88-25</p>
-                    <p>Приемная комиссия +7 (499) 600-82-49</p>
-                    <p>Директор по экономике +7 (499) 600-82-18</p>
-                    <p>Проректор по уч. работе +7 (499) 600-82-11</p>
-                    <p>Проректор по НИД +7 (499) 600-82-02</p>
-                    <p>Диспетчер +7 (499) 600-87-65</p>
-                </div>
-            </li>
-        </ul>
 
         <h4>Последние добавленные</h4>
         <ul class="collapsible" data-collapsible="accordion">
         {% for person in list %}
             <li>
-
               <div class="collapsible-header valign-wrapper">
                   <div class="col l3 m7 red-text text-lighten-1 valign-wrapper" style="font-size: 0.9rem; font-weight: bold; ">
                     {% if person.photo %}
