@@ -149,6 +149,7 @@ STATIC_ROOT = normpath(join(BASE_DIR, 'static', 'collected'))
 STATICFILES_DIRS = (
     normpath(join(BASE_DIR, 'static')),
 )
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'phones',  'images')
 MEDIA_URL = '/media/'
 
